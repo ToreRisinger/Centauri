@@ -48,23 +48,5 @@ public class ClientSend : MonoBehaviour
         }
     }
 
-    /*
-    public static void PlayerInput(bool[] _inputs)
-    {
-        using (Packet _packet = new Packet((int)ClientPackets.playerInput))
-        {
-            _packet.Write(_inputs.Length);
-            foreach(bool _input in _inputs)
-            {
-                _packet.Write(_input);
-            }
-
-            
-            SendTCPData(_packet);
-        }
-    }
-    */
-
-
     #endregion
 }

@@ -261,9 +261,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 280016365}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c6f3a5a214961d4ba24cc3f392d0a3a, type: 3}
+  m_Script: {fileID: 11500000, guid: 5de33afb1d9e0844993b38c75f394ad6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  testMapPrefab: {fileID: 703804608429689812, guid: a396313363707944ca9a48304e444565,
+    type: 3}
 --- !u!4 &280016367
 Transform:
   m_ObjectHideFlags: 0
@@ -647,8 +649,7 @@ MonoBehaviour:
     type: 3}
   playerPrefab: {fileID: 8421221322342126995, guid: 77c5e011e85bd62418729519b79271c4,
     type: 3}
-  testMapPrefab: {fileID: 703804608429689812, guid: a396313363707944ca9a48304e444565,
-    type: 3}
+  mapObject: {fileID: 0}
 --- !u!4 &1241336699
 Transform:
   m_ObjectHideFlags: 0

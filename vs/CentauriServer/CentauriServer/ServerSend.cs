@@ -111,7 +111,6 @@ namespace Server
                 _packet.Write(_players.Count());
                 for(int i = 0; i < _players.Count(); i++)
                 {
-                    
                     _packet.Write(_players[i].id);
                     _packet.Write(_players[i].position);
                     _packet.Write((int)_players[i].direction);

@@ -38,17 +38,33 @@ public class GameManager : MonoBehaviour
         //TODO now we apply directly -> fix add interpolation between old and new
         while(gameStateQueue.Count > 0)
         {
+            HashSet<int> foundPlayers = new HashSet<int>();
             GameState gameState = gameStateQueue.Dequeue();
             for(int i = 0; i < gameState.players.Count; i++)
             {
                 PlayerStateData playerStateData = gameState.players[i];
-                if(players.ContainsKey(playerStateData.id) && playerStateData.id != Client.instance.myId)
+                foundPlayers.Add(playerStateData.id);
+                if (players.ContainsKey(playerStateData.id) && playerStateData.id != Client.instance.myId)
                 {
                     players[playerStateData.id].Move(playerStateData.position);
                     players[playerStateData.id].direction = playerStateData.direction;
                 }
             }
 
+            List<int> playersToRemove = new List<int>();
+            foreach(PlayerManager playerManager in players.Values)
+            {
+                if(!foundPlayers.Contains(playerManager.id))
+                {
+                    playersToRemove.Add(playerManager.id);
+                }
+            }
+
+            foreach (int playerIdToRemove in playersToRemove)
+            {
+                RemovePlayer(playerIdToRemove);
+            }
+            
             gameStateHistory.Add(gameState);
             turnNumber = gameState.turnNumber;
         }
@@ -57,7 +73,6 @@ public class GameManager : MonoBehaviour
         {
             gameStateHistory.RemoveAt(0);
         }
-
 
         //Move local player
         if (players.ContainsKey(Client.instance.myId))
@@ -115,5 +130,14 @@ public class GameManager : MonoBehaviour
         System.Numerics.Vector2 currentPosition = new System.Numerics.Vector2(_localPlayer.transform.position.x, _localPlayer.transform.position.y);
         System.Numerics.Vector2 newPosition = PlayerMovement.GetNewPosition(currentPosition, actions, _delta);
         _localPlayer.MoveVelocity(new UnityEngine.Vector2(newPosition.X, newPosition.Y));
+    }
+
+    private void RemovePlayer(int id)
+    {
+        if(players.ContainsKey(id))
+        {
+            players[id].Destroy();
+            players.Remove(id);
+        }
     }
 }

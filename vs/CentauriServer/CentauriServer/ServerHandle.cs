@@ -17,7 +17,7 @@ namespace Server
             {
                 Console.WriteLine($"Player \"{_username}\" (ID: {_fromClient}) has assumed the wrong client ID ({_clientIdCheck})!");
             }
-            //GameServer.clients[_fromClient].SendIntoGame(_username);
+
             GameLogic.PlayerJoined(_fromClient, _username);
         }
 
@@ -34,7 +34,8 @@ namespace Server
                 _actions.Add((EPlayerAction)_packet.ReadInt());
             }
             PlayerCommandData cmd = new PlayerCommandData(_turnNumber, _deltaTime, _position, (EPlayerDirection) _direction, _actions);
-            GameServer.clients[_fromClient].player.pushCommand(cmd);
+            //GameServer.clients[_fromClient].player.pushCommand(cmd);
+            GameLogic.onPlayerCommand(_fromClient, cmd);
         }
     }
 }

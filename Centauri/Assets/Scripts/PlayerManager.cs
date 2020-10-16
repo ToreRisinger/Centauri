@@ -57,8 +57,12 @@ public class PlayerManager : MonoBehaviour
         if(up || down || left || right)
         {
             direction = PlayerDirectionUtils.GetPlayerDirection(up, down, left, right);
-        }
-        
+        } 
+    }
+
+    public void Destroy()
+    {
+        Destroy(gameObject);
     }
 
     private void SetSprite()

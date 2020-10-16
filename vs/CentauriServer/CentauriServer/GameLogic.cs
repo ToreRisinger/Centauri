@@ -1,6 +1,5 @@
 ﻿
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 
 namespace Server
@@ -8,6 +7,7 @@ namespace Server
     class GameLogic
     {
         private static Map map = new TestMap();
+        private static Dictionary<int, Player> players = new Dictionary<int, Player>();
 
         private static int turnNumber = 0;
         public static void Update()
@@ -16,52 +16,48 @@ namespace Server
 
             ThreadManager.UpdateMain();
 
-            List<Player> players = new List<Player>();
-            foreach (Client _client in GameServer.clients.Values)
+            foreach (Player _player in players.Values)
             {
-                if(_client.player != null)
-                {
-                    //Update their position based on input
-                    _client.player.Update();
-                    
-                    players.Add(_client.player);
+                //Update their position based on input
+                _player.Update();
 
-                    //If player shoots, check what turn number it was and look for collisions on that turn
-                }
+                //If player shoots, check what turn number it was and look for collisions on that turn
             }
 
             //Compile a gamestate package which is sent to all players
             //Send game state to all, embedd the turn number
-            ServerSend.GameState(players, turnNumber);
+            ServerSend.GameState(new List<Player>(players.Values), turnNumber);
         }
 
         public static void PlayerJoined(int _playerId, string _playerName)
         {
-            Client newClient = GameServer.clients[_playerId];
             Vector2 newPlayerPosition = Map.mapPosition + new Vector2(map.getMarineSpawnPoint().X, map.getMarineSpawnPoint().Y);
-            newClient.createPlayer(_playerName, newPlayerPosition);
-
-            List<Player> players = new List<Player>();
-            foreach(Client _client in GameServer.clients.Values)
-            {
-                if(_client.player != null)
-                {
-                    players.Add(_client.player);
-                }
-            }
-
+            Player newPlayer = new Player(_playerId, _playerName, newPlayerPosition);
+            players.Add(_playerId, newPlayer);
 
             //Send all ingame players to the new client
-            ServerSend.Initialize(_playerId, map.GetMapId(), players);
-
+            ServerSend.Initialize(_playerId, map.GetMapId(), new List<Player>(players.Values));
 
             //Send new client player to all ingame players
-            foreach (Client _client in GameServer.clients.Values)
+            foreach (Player _player in players.Values)
             {
-                if (_client.player != null)
-                {
-                    ServerSend.SpawnPlayer(_client.id, newClient.player);
-                }
+                ServerSend.SpawnPlayer(_player.id, newPlayer);
+            }
+        }
+
+        public static void onPlayerCommand(int playerId, PlayerCommandData cmd)
+        {
+            if(players.ContainsKey(playerId))
+            {
+                players[playerId].pushCommand(cmd);
+            }
+        }
+
+        public static void onPlayerLeft(int playerLeftId)
+        {
+            if (players.ContainsKey(playerLeftId))
+            {
+                players.Remove(playerLeftId);
             }
         }
     }

@@ -10,7 +10,6 @@ namespace Server
         public static int dataBufferSize = 4096;
 
         public int id;
-        public Player player;
         public TCP tcp;
         public UDP udp;
 
@@ -47,7 +46,7 @@ namespace Server
                 receiveBuffer = new byte[dataBufferSize];
 
                 stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
-                ServerSend.Welcome(id, "Welcome to the server!");
+                GameServer.clients[id].Connect();
             }
 
             public void SendData(Packet _packet)
@@ -181,18 +180,24 @@ namespace Server
             }
         }
 
+        /*
         public void createPlayer(string _playerName, Vector2 _position)
         {
             player = new Player(id, _playerName, _position);
         }
+        */
 
         private void Disconnect()
         {
             Console.WriteLine($"{tcp.socket.Client.RemoteEndPoint} has disconnected.");
-
-            player = null;
+            GameLogic.onPlayerLeft(id);
             tcp.Disconnect();
             udp.Disconnect();
+        }
+
+        private void Connect()
+        {
+            ServerSend.Welcome(id, "Welcome to the server!");
         }
     }
 }
