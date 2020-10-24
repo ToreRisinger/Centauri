@@ -1,11 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿using System.Numerics;
 
 class GameObject
 {
-    int _id;
+    public int id;
+    public ETeam teamId;
+    public Vector2 position;
 
+    public GameObject(int _id, ETeam _teamId, Vector2 _position)
+    {
+        id = _id;
+        teamId = _teamId;
+        position = _position;
+    }
 }
 
