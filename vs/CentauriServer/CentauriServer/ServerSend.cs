@@ -84,6 +84,7 @@ namespace Server
                     {
                         _packet.Write(_player.id);
                         _packet.Write(_player.username);
+                        _packet.Write(_player.teamId);
                         _packet.Write(_player.position);
                     }
                     
@@ -91,7 +92,35 @@ namespace Server
                 SendTCPData(_toClient, _packet);
             }
         }
+        public static void GameState(List<Player> _players, Queue<Event> events, int _turnNumber)
+        {
+            using (Packet _packet = new Packet((int)ServerPackets.gameState))
+            {
+                //TurnNumber
+                _packet.Write(_turnNumber);
 
+                //Player states
+                _packet.Write(_players.Count());
+                for(int i = 0; i < _players.Count(); i++)
+                {
+                    _packet.Write(_players[i].id);
+                    _packet.Write(_players[i].teamId);
+                    _packet.Write(_players[i].position);
+                    _packet.Write((int)_players[i].direction);
+                }
+
+                //Events
+                _packet.Write(events.Count());
+                for (int i = 0; i < events.Count(); i++)
+                {
+                    events.Dequeue().WriteToPacket(_packet);
+                }
+
+                SendTCPDataToAll(_packet);
+            }
+        }
+
+        /*
         public static void SpawnPlayer(int _toClient, Player _player)
         {
             using (Packet _packet = new Packet((int)ServerPackets.spawnPlayer))
@@ -102,23 +131,7 @@ namespace Server
                 SendTCPData(_toClient, _packet);
             }
         }
-
-        public static void GameState(List<Player> _players, int _turnNumber)
-        {
-            using (Packet _packet = new Packet((int)ServerPackets.gameState))
-            {
-                _packet.Write(_turnNumber);
-                _packet.Write(_players.Count());
-                for(int i = 0; i < _players.Count(); i++)
-                {
-                    _packet.Write(_players[i].id);
-                    _packet.Write(_players[i].position);
-                    _packet.Write((int)_players[i].direction);
-                }
-                
-                SendTCPDataToAll(_packet);
-            }
-        }
+        */
 
         #endregion
     }

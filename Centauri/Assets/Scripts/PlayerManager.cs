@@ -6,6 +6,8 @@ public class PlayerManager : MonoBehaviour
 {
     public int id;
     public string username;
+    public int teamId; 
+
     public EPlayerDirection direction;
 
     private Rigidbody2D rb;

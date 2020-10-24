@@ -1,4 +1,5 @@
 ﻿using PlayerDirection;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using UnityEngine;
@@ -12,7 +13,7 @@ public class ClientHandle : MonoBehaviour
 
         Debug.Log($"Message from server: {_msg}");
         Client.instance.myId = _myId;
-        ClientSend.WelcomeReceived();   
+        ClientSend.WelcomeReceived();
 
         Client.instance.udp.Connect(((IPEndPoint)Client.instance.tcp.socket.Client.LocalEndPoint).Port);
     }
@@ -22,15 +23,17 @@ public class ClientHandle : MonoBehaviour
         int mapId = _packet.ReadInt();
         GameManager.instance.Initialize(mapId);
         int playerCount = _packet.ReadInt();
-        for(int i = 0; i < playerCount; i++)
+        for (int i = 0; i < playerCount; i++)
         {
-            int _id = _packet.ReadInt();
+            int _playerId = _packet.ReadInt();
             string _username = _packet.ReadString();
-            Vector2 _position = _packet.ReadVector2();
-            GameManager.instance.SpawnPlayer(_id, _username, _position);
+            int _teamId = _packet.ReadInt();
+            Vector2 _position = _packet.ReadUnityVector2();
+            GameManager.instance.onPlayerJoin(_playerId, _username, _teamId, _position);
         }
     }
 
+    /*
     public static void SpawnPlayer(Packet _packet)
     {
         int _id = _packet.ReadInt();
@@ -39,24 +42,49 @@ public class ClientHandle : MonoBehaviour
 
         GameManager.instance.SpawnPlayer(_id, _username, _position);
     }
+    */
 
     public static void GameState(Packet _packet)
     {
+        //TurnNumber
         int turnNumber = _packet.ReadInt();
-        int nrOfPlayers = _packet.ReadInt();
 
+        //Player states
+        int nrOfPlayers = _packet.ReadInt();
         List<PlayerStateData> playerStates = new List<PlayerStateData>();
-        for(int i = 0; i < nrOfPlayers; i++)
+        for (int i = 0; i < nrOfPlayers; i++)
         {
             int _id = _packet.ReadInt();
-            Vector2 _position = _packet.ReadVector2();
+            int _teamId = _packet.ReadInt();
+            Vector2 _position = _packet.ReadUnityVector2();
             EPlayerDirection direction = (EPlayerDirection)_packet.ReadInt();
-            playerStates.Add(new PlayerStateData(_id, _position, direction));
+            playerStates.Add(new PlayerStateData(_id, _teamId, _position, direction));
         }
 
-        GameManager.instance.pushGameState(new GameState(turnNumber, playerStates));
+        //Events
+        Queue<Event> events = new Queue<Event>();
+        int nrOfEvents = _packet.ReadInt();
+        for (int i = 0; i < nrOfEvents; i++)
+        {
+            events.Enqueue(ReadEventFromPacket(_packet));
+        }
+
+        GameManager.instance.pushGameState(new GameState(turnNumber, playerStates, events));
     }
 
+    private static Dictionary<int, Func<int, Packet, Event>> eventMap = new Dictionary<int, Func<int, Packet, Event>>
+    {
+        {(int)EventTypes.ServerEvents.PLAYER_DISCONNECTED, (eventId, packet) => { return new PlayerDisconnectedEvent(eventId, packet); } },
+        {(int)EventTypes.ServerEvents.PLAYER_JOINED, (eventId, packet) => { return new PlayerJoinedEvent(eventId, packet); } },
+        {(int)EventTypes.ServerEvents.PLAYER_TEAM_CHANGE, (eventId, packet) => { return new PlayerTeamChangeEvent(eventId, packet); } }
+
+    };
+
+    private static Event ReadEventFromPacket(Packet _packet)
+    {
+        int eventId = _packet.ReadInt();
+        return eventMap[eventId](eventId, _packet);
+    }
 
     /*
     public static void PlayerState(Packet _packet)

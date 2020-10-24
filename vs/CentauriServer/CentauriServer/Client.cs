@@ -180,13 +180,6 @@ namespace Server
             }
         }
 
-        /*
-        public void createPlayer(string _playerName, Vector2 _position)
-        {
-            player = new Player(id, _playerName, _position);
-        }
-        */
-
         private void Disconnect()
         {
             Console.WriteLine($"{tcp.socket.Client.RemoteEndPoint} has disconnected.");

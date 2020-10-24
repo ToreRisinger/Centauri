@@ -327,9 +327,16 @@ public class Packet : IDisposable
 
     /// <summary>Reads a Vector2 from the packet.</summary>
     /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
-    public UnityEngine.Vector2 ReadVector2(bool _moveReadPos = true)
+    public UnityEngine.Vector2 ReadUnityVector2(bool _moveReadPos = true)
     {
         return new UnityEngine.Vector2(ReadFloat(_moveReadPos), ReadFloat(_moveReadPos));
+    }
+
+    /// <summary>Reads a Vector2 from the packet.</summary>
+    /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
+    public System.Numerics.Vector2 ReadVector2(bool _moveReadPos = true)
+    {
+        return new System.Numerics.Vector2(ReadFloat(_moveReadPos), ReadFloat(_moveReadPos));
     }
     #endregion
 
