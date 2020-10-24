@@ -84,7 +84,7 @@ namespace Server
                     {
                         _packet.Write(_player.id);
                         _packet.Write(_player.username);
-                        _packet.Write(_player.teamId);
+                        _packet.Write((int)_player.teamId);
                         _packet.Write(_player.position);
                     }
                     
@@ -104,7 +104,7 @@ namespace Server
                 for(int i = 0; i < _players.Count(); i++)
                 {
                     _packet.Write(_players[i].id);
-                    _packet.Write(_players[i].teamId);
+                    _packet.Write((int)_players[i].teamId);
                     _packet.Write(_players[i].position);
                     _packet.Write((int)_players[i].direction);
                 }

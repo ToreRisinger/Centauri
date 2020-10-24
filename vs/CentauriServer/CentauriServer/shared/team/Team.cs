@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 public class Team
 {
     private HashSet<int> playerIds;
-    private int teamId;
+    private ETeam teamId;
     private string teamName;
 
-    public Team(int _teamId, string _teamName)
+    public Team(ETeam _teamId, string _teamName)
     {
         teamId = _teamId;
         teamName = _teamName;
@@ -54,7 +53,7 @@ public class Team
 
         return idList;
     }
-    public int GetTeamId()
+    public ETeam GetTeamId()
     {
         return teamId;
     }

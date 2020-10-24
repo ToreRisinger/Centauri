@@ -6,7 +6,7 @@ public class PlayerManager : MonoBehaviour
 {
     public int id;
     public string username;
-    public int teamId; 
+    public ETeam teamId; 
 
     public EPlayerDirection direction;
 

@@ -166,7 +166,7 @@ public class GameManager : MonoBehaviour
         }  
     }
 
-    public void onPlayerJoin(int _id, string _username, int _teamId, UnityEngine.Vector2 _position)
+    public void onPlayerJoin(int _id, string _username, ETeam _teamId, UnityEngine.Vector2 _position)
     {
         if (!players.ContainsKey(_id))
         {

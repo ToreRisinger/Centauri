@@ -6,10 +6,10 @@ public class PlayerJoinedEvent : Event
 {
     public int playerId;
     public string username;
-    public int teamId;
+    public ETeam teamId;
     public Vector2 spawnPosition;
 
-    public PlayerJoinedEvent(int _playerId, string _username, int _teamId, Vector2 _spawnPosition) : base(EventTypes.ServerEvents.PLAYER_JOINED)
+    public PlayerJoinedEvent(int _playerId, string _username, ETeam _teamId, Vector2 _spawnPosition) : base(EventTypes.ServerEvents.PLAYER_JOINED)
     {
         playerId = _playerId;
         username = _username;
@@ -21,7 +21,7 @@ public class PlayerJoinedEvent : Event
     {
         playerId = _packet.ReadInt();
         username = _packet.ReadString();
-        teamId = _packet.ReadInt();
+        teamId = (ETeam)_packet.ReadInt();
         spawnPosition = _packet.ReadVector2();
     }
 
@@ -30,7 +30,7 @@ public class PlayerJoinedEvent : Event
         base.WriteToPacket(_packet);
         _packet.Write(playerId);
         _packet.Write(username);
-        _packet.Write(teamId);
+        _packet.Write((int)teamId);
         _packet.Write(spawnPosition);
     }
 }

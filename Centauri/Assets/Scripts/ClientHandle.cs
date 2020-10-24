@@ -29,7 +29,7 @@ public class ClientHandle : MonoBehaviour
             string _username = _packet.ReadString();
             int _teamId = _packet.ReadInt();
             Vector2 _position = _packet.ReadUnityVector2();
-            GameManager.instance.onPlayerJoin(_playerId, _username, _teamId, _position);
+            GameManager.instance.onPlayerJoin(_playerId, _username, (ETeam)_teamId, _position);
         }
     }
 
@@ -58,7 +58,7 @@ public class ClientHandle : MonoBehaviour
             int _teamId = _packet.ReadInt();
             Vector2 _position = _packet.ReadUnityVector2();
             EPlayerDirection direction = (EPlayerDirection)_packet.ReadInt();
-            playerStates.Add(new PlayerStateData(_id, _teamId, _position, direction));
+            playerStates.Add(new PlayerStateData(_id, (ETeam)_teamId, _position, direction));
         }
 
         //Events

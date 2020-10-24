@@ -7,7 +7,7 @@ namespace Server
     {
         public int id;
         public string username;
-        public int teamId;
+        public ETeam teamId;
 
         public Vector2 position;
         public EPlayerDirection direction;
@@ -15,7 +15,7 @@ namespace Server
         private Queue<PlayerCommandData> playerCommandQueue;
         private List<PlayerCommandData> playerCommandHistory;
 
-        public Player(int _id, string _username, int _teamId, Vector2 _spawnPosition)
+        public Player(int _id, string _username, ETeam _teamId, Vector2 _spawnPosition)
         {
             id = _id;
             username = _username;

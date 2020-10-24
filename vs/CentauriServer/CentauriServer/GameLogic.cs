@@ -36,7 +36,7 @@ namespace Server
         public static void PlayerJoined(int _playerId, string _playerName)
         {
             Vector2 _newPlayerPosition;
-            int _teamId;
+            ETeam _teamId;
 
             //Add player to a team
             if (teamManager.marineTeam.GetNrOfPlayers() > teamManager.centauriTeam.GetNrOfPlayers())
