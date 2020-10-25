@@ -12,7 +12,7 @@
 
     public Team getTeam(ETeam teamId)
     {
-        switch (teamId)
+        switch(teamId)
         {
             case ETeam.MARINE: return marineTeam;
             case ETeam.CENTAURI: return centauriTeam;

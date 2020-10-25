@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using static Shared.PacketTypes;
+using static PacketTypes;
 
 namespace Server
 {
@@ -119,19 +119,6 @@ namespace Server
                 SendTCPDataToAll(_packet);
             }
         }
-
-        /*
-        public static void SpawnPlayer(int _toClient, Player _player)
-        {
-            using (Packet _packet = new Packet((int)ServerPackets.spawnPlayer))
-            {
-                _packet.Write(_player.id);
-                _packet.Write(_player.username);
-                _packet.Write(_player.position);
-                SendTCPData(_toClient, _packet);
-            }
-        }
-        */
 
         #endregion
     }

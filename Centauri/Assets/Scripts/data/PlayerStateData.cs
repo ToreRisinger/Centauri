@@ -1,5 +1,4 @@
-﻿using PlayerDirection;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerStateData
 {

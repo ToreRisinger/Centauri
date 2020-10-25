@@ -1,7 +1,4 @@
 ﻿
-
-using UnityEngine;
-
 public abstract class Event
 {
     public EventTypes.ServerEvents eventType;
@@ -13,7 +10,6 @@ public abstract class Event
 
     public Event(Packet _packet)
     {
-        Debug.Log("Reading event Id");
         eventType = (EventTypes.ServerEvents)_packet.ReadInt();
     }
 

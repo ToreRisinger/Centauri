@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Net.Sockets;
 using System;
 using System.Net;
-using static Shared.PacketTypes;
+using static PacketTypes;
 
 public class Client : MonoBehaviour
 {

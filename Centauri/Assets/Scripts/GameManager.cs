@@ -1,5 +1,4 @@
-﻿using PlayerDirection;
-using Shared;
+﻿using Shared;
 using System;
 using System.Collections.Generic;
 using UnityEngine;

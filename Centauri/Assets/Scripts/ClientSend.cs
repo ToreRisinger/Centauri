@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
-using static Shared.PacketTypes;
-using PlayerDirection;
+using static PacketTypes;
 using System.Collections.Generic;
 
 public class ClientSend : MonoBehaviour
