@@ -10,7 +10,6 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     public static Dictionary<int, PlayerManager> players = new Dictionary<int, PlayerManager>();
-    public static TeamManager teamManager = new TeamManager();
 
     private Queue<GameState> gameStateQueue = new Queue<GameState>();
     private List<GameState> gameStateHistory = new List<GameState>();
@@ -86,14 +85,14 @@ public class GameManager : MonoBehaviour
             gameStateHistory.RemoveAt(0);
         }
         
-        teamManager.centauriTeam.clearTeam();
-        teamManager.marineTeam.clearTeam();
-        teamManager.spectatorTeam.clearTeam();
+        TeamManager.centauriTeam.clearTeam();
+        TeamManager.marineTeam.clearTeam();
+        TeamManager.spectatorTeam.clearTeam();
 
         //Set teams
         foreach (PlayerManager p in players.Values)
         {
-            teamManager.getTeam(p.teamId).AddPlayer(p.id);
+            TeamManager.getTeam(p.teamId).AddPlayer(p.id);
         }
 
         //Move local player
@@ -105,7 +104,7 @@ public class GameManager : MonoBehaviour
 
             MoveLocalPlayer(localPlayer, actions, delta);
             localPlayer.SetDirection(actions);
-            EPlayerDirection direction = localPlayer.direction;
+            EObjectDirection direction = localPlayer.direction;
             UnityEngine.Vector2 localPlayerPosition = localPlayer.transform.position;
 
             //Send player command to server
@@ -170,7 +169,7 @@ public class GameManager : MonoBehaviour
         if (!players.ContainsKey(_id))
         {
             Debug.Log("Player " + _username + " (" + _id + ") joined the game.");
-            Debug.Log("Player " + _username + "(" + _id + ") joined team " + teamManager.getTeam(_teamId).getTeamName() + ".");
+            Debug.Log("Player " + _username + "(" + _id + ") joined team " + TeamManager.getTeam(_teamId).getTeamName() + ".");
 
         
             GameObject _player;

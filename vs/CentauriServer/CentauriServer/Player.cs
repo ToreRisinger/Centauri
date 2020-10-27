@@ -10,7 +10,7 @@ namespace Server
         public ETeam teamId;
 
         public Vector2 position;
-        public EPlayerDirection direction;
+        public EObjectDirection direction;
 
         private Queue<PlayerCommandData> playerCommandQueue;
         private List<PlayerCommandData> playerCommandHistory;
@@ -21,7 +21,7 @@ namespace Server
             username = _username;
             teamId = _teamId;
             position = _spawnPosition;
-            direction = EPlayerDirection.TOP;
+            direction = EObjectDirection.TOP;
 
             playerCommandQueue = new Queue<PlayerCommandData>();
             playerCommandHistory = new List<PlayerCommandData>();

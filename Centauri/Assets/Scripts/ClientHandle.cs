@@ -32,17 +32,6 @@ public class ClientHandle : MonoBehaviour
         }
     }
 
-    /*
-    public static void SpawnPlayer(Packet _packet)
-    {
-        int _id = _packet.ReadInt();
-        string _username = _packet.ReadString();
-        Vector2 _position = _packet.ReadVector2();
-
-        GameManager.instance.SpawnPlayer(_id, _username, _position);
-    }
-    */
-
     public static void GameState(Packet _packet)
     {
         //TurnNumber
@@ -56,7 +45,7 @@ public class ClientHandle : MonoBehaviour
             int _id = _packet.ReadInt();
             int _teamId = _packet.ReadInt();
             Vector2 _position = _packet.ReadUnityVector2();
-            EPlayerDirection direction = (EPlayerDirection)_packet.ReadInt();
+            EObjectDirection direction = (EObjectDirection)_packet.ReadInt();
             playerStates.Add(new PlayerStateData(_id, (ETeam)_teamId, _position, direction));
         }
 

@@ -33,7 +33,7 @@ namespace Server
             {
                 _actions.Add((EPlayerAction)_packet.ReadInt());
             }
-            PlayerCommandData cmd = new PlayerCommandData(_turnNumber, _deltaTime, _position, (EPlayerDirection) _direction, _actions);
+            PlayerCommandData cmd = new PlayerCommandData(_turnNumber, _deltaTime, _position, (EObjectDirection) _direction, _actions);
             //GameServer.clients[_fromClient].player.pushCommand(cmd);
             GameLogic.onPlayerCommand(_fromClient, cmd);
         }

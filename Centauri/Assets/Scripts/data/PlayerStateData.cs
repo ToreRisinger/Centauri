@@ -4,10 +4,10 @@ public class PlayerStateData
 {
     public int id;
     public Vector2 position;
-    public EPlayerDirection direction;
+    public EObjectDirection direction;
     public ETeam teamId;
 
-    public PlayerStateData(int _id, ETeam _teamId, Vector2 _position, EPlayerDirection _direction)
+    public PlayerStateData(int _id, ETeam _teamId, Vector2 _position, EObjectDirection _direction)
     {
         id = _id;
         teamId = _teamId;

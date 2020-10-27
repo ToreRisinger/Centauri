@@ -30,7 +30,7 @@ public class ClientSend : MonoBehaviour
         }
     }
 
-    public static void PlayerCommand(HashSet<EPlayerAction> _actions, Vector2 _position, EPlayerDirection direction, int turnNumber, float deltaTime)
+    public static void PlayerCommand(HashSet<EPlayerAction> _actions, Vector2 _position, EObjectDirection direction, int turnNumber, float deltaTime)
     {
         using (Packet _packet = new Packet((int)ClientPackets.playerCommand))
         {

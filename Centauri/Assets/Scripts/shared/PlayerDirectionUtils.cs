@@ -1,40 +1,40 @@
 ﻿public class PlayerDirectionUtils
 {
-    public static EPlayerDirection GetPlayerDirection(bool up, bool down, bool left, bool right)
+    public static EObjectDirection GetPlayerDirection(bool up, bool down, bool left, bool right)
     {
         if (up && !left && !right && !down)
         {
-            return EPlayerDirection.TOP;
+            return EObjectDirection.TOP;
         }
         else if (up && !left && right && !down)
         {
-            return EPlayerDirection.TOP_RIGHT;
+            return EObjectDirection.TOP_RIGHT;
         }
         else if (!up && !left && right && !down)
         {
-            return EPlayerDirection.RIGHT;
+            return EObjectDirection.RIGHT;
         }
         else if (!up && !left && right && down)
         {
-            return EPlayerDirection.BOTTOM_RIGHT;
+            return EObjectDirection.BOTTOM_RIGHT;
         }
         else if (!up && !left && !right && down)
         {
-            return EPlayerDirection.BOTTOM;
+            return EObjectDirection.BOTTOM;
         }
         else if (!up && left && !right && down)
         {
-            return EPlayerDirection.BOTTOM_LEFT;
+            return EObjectDirection.BOTTOM_LEFT;
         }
         else if (!up && left && !right && !down)
         {
-            return EPlayerDirection.LEFT;
+            return EObjectDirection.LEFT;
         }
         else if (up && left && !right && !down)
         {
-            return EPlayerDirection.TOP_LEFT;
+            return EObjectDirection.TOP_LEFT;
         }
 
-        return EPlayerDirection.TOP;
+        return EObjectDirection.TOP;
     }
 }

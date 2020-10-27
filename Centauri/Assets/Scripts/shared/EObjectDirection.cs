@@ -1,5 +1,5 @@
 ﻿
-public enum EPlayerDirection
+public enum EObjectDirection
 {
     TOP,
     TOP_RIGHT,

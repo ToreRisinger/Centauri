@@ -11,8 +11,6 @@ namespace Server
 
         private static Queue<Event> events = new Queue<Event>();
 
-        private static TeamManager teamManager = new TeamManager();
-
         private static int turnNumber = 0;
         public static void Update()
         {
@@ -39,17 +37,17 @@ namespace Server
             ETeam _teamId;
 
             //Add player to a team
-            if (teamManager.marineTeam.GetNrOfPlayers() > teamManager.centauriTeam.GetNrOfPlayers())
+            if (TeamManager.marineTeam.GetNrOfPlayers() > TeamManager.centauriTeam.GetNrOfPlayers())
             {
                 _newPlayerPosition = Map.mapPosition + new Vector2(map.getAlienSpawnPoint().X, map.getAlienSpawnPoint().Y);
-                teamManager.centauriTeam.AddPlayer(_playerId);
-                _teamId = teamManager.centauriTeam.GetTeamId();
+                TeamManager.centauriTeam.AddPlayer(_playerId);
+                _teamId = TeamManager.centauriTeam.GetTeamId();
             }
             else
             {
                 _newPlayerPosition = Map.mapPosition + new Vector2(map.getMarineSpawnPoint().X, map.getMarineSpawnPoint().Y);
-                teamManager.marineTeam.AddPlayer(_playerId);
-                _teamId = teamManager.marineTeam.GetTeamId();
+                TeamManager.marineTeam.AddPlayer(_playerId);
+                _teamId = TeamManager.marineTeam.GetTeamId();
             }
 
             Player newPlayer = new Player(_playerId, _playerName, _teamId, _newPlayerPosition);
@@ -76,7 +74,7 @@ namespace Server
             {
                 Player player = players[playerLeftId];
                 players.Remove(player.id);
-                teamManager.getTeam(player.teamId).RemovePlayer(playerLeftId);
+                TeamManager.getTeam(player.teamId).RemovePlayer(playerLeftId);
             }
         }
 

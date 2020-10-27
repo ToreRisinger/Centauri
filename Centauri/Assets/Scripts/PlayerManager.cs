@@ -7,7 +7,7 @@ public class PlayerManager : MonoBehaviour
     public string username;
     public ETeam teamId; 
 
-    public EPlayerDirection direction;
+    public EObjectDirection direction;
 
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
@@ -23,7 +23,7 @@ public class PlayerManager : MonoBehaviour
 
     void Awake()
     {
-        direction = EPlayerDirection.TOP;
+        direction = EObjectDirection.TOP;
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
     }
@@ -70,28 +70,28 @@ public class PlayerManager : MonoBehaviour
     {
         switch(direction)
         {
-            case EPlayerDirection.TOP:
+            case EObjectDirection.TOP:
                 spriteRenderer.sprite = topSprite;
                 return;
-            case EPlayerDirection.TOP_RIGHT:
+            case EObjectDirection.TOP_RIGHT:
                 spriteRenderer.sprite = topRightSprite;
                 return;
-            case EPlayerDirection.RIGHT:
+            case EObjectDirection.RIGHT:
                 spriteRenderer.sprite = rightSprite;
                 return;
-            case EPlayerDirection.BOTTOM_RIGHT:
+            case EObjectDirection.BOTTOM_RIGHT:
                 spriteRenderer.sprite = bottomRightSprite;
                 return;
-            case EPlayerDirection.BOTTOM:
+            case EObjectDirection.BOTTOM:
                 spriteRenderer.sprite = bottomSprite;
                 return;
-            case EPlayerDirection.BOTTOM_LEFT:
+            case EObjectDirection.BOTTOM_LEFT:
                 spriteRenderer.sprite = bottomLeftSprite;
                 return;
-            case EPlayerDirection.LEFT:
+            case EObjectDirection.LEFT:
                 spriteRenderer.sprite = leftSprite;
                 return;
-            case EPlayerDirection.TOP_LEFT:
+            case EObjectDirection.TOP_LEFT:
                 spriteRenderer.sprite = topLeftSprite;
                 return;
             default:
