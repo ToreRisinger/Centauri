@@ -10,11 +10,14 @@ public class CharacterObject : HpObject
     public ECharacterType characterType;
     public EObjectDirection direction;
 
+    public int playerId;
+
     public int speed;
 
-    public CharacterObject(ECharacterType _characterType, int _hp, int _regen, int _speed, ETeam _teamId, Vector2 _position, EObjectDirection _direction) : 
+    public CharacterObject(int _playerId, ECharacterType _characterType, int _hp, int _regen, int _speed, ETeam _teamId, Vector2 _position, EObjectDirection _direction) : 
         base(_hp, _regen, _teamId, _position)
     {
+        playerId = _playerId;
         direction = _direction;
         characterType = _characterType;
         speed = _speed;
@@ -28,8 +31,10 @@ public class CharacterObject : HpObject
         commandQueue.Enqueue(_command);
     }
 
-    public void Update()
+    public new void Update()
     {
+        base.Update();
+
         while (commandQueue.Count > 0)
         {
             //TODO add validation checks

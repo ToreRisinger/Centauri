@@ -17,4 +17,11 @@ public abstract class Event
     {
         _packet.Write((int)eventType);
     }
+
+    public abstract string GetName();
+
+    public override string ToString()
+    {
+        return $"[EVENT {GetName()}]";
+    }
 }

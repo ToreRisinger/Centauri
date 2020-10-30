@@ -5,9 +5,8 @@ namespace Shared
 {
     class PlayerMovement
     {
-        private static float moveSpeed = 12f;
 
-        public static Vector2 GetNewPosition(Vector2 _position, HashSet<EPlayerAction> _actions, float _delta)
+        public static Vector2 GetNewPosition(Vector2 _position, HashSet<EPlayerAction> _actions, float _delta, int _speed)
         {
             if(_actions.Contains(EPlayerAction.HOLD_POSITION))
             {
@@ -35,7 +34,7 @@ namespace Shared
             Vector2 newPosition = new Vector2(_position.X, _position.Y);
             Vector2 direction = new Vector2(_inputDirection.X, _inputDirection.Y);
             
-            float modifiedMoveSpeed = moveSpeed;
+            float modifiedMoveSpeed = _speed;
             if(_actions.Contains(EPlayerAction.HOLD_DIRECTION))
             {
                 modifiedMoveSpeed = modifiedMoveSpeed / 2;

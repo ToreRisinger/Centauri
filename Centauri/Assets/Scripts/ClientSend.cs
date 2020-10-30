@@ -30,19 +30,11 @@ public class ClientSend : MonoBehaviour
         }
     }
 
-    public static void PlayerCommand(HashSet<EPlayerAction> _actions, Vector2 _position, EObjectDirection direction, int turnNumber, float deltaTime)
+    public static void PlayerCommand(PlayerCommandData data)
     {
         using (Packet _packet = new Packet((int)ClientPackets.playerCommand))
         {
-            _packet.Write(turnNumber);
-            _packet.Write(deltaTime);
-            _packet.Write(new System.Numerics.Vector2(_position.x, _position.y));
-            _packet.Write((int)direction);
-            _packet.Write(_actions.Count);
-            foreach (EPlayerAction action in _actions)
-            {
-                _packet.Write((int)action);
-            }
+            data.WriteToPacket(_packet);
             SendTCPData(_packet);
         }
     }

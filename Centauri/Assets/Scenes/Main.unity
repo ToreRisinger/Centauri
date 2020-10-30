@@ -475,6 +475,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1080106231}
   m_CullTransparentMesh: 0
+--- !u!1 &1226900559
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1226900561}
+  - component: {fileID: 1226900560}
+  m_Layer: 0
+  m_Name: PlayerController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1226900560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1226900559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83afe746f8052124c915dd8eb6c5b3f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1226900561
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1226900559}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 10057.714, y: 10009.107, z: -142845.69}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1238217944
 GameObject:
   m_ObjectHideFlags: 0
@@ -645,11 +688,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   turnNumber: 0
-  localPlayerPrefab: {fileID: 8421221322342126995, guid: d3773bdcef684774790af0ddffba3000,
+  MarinePrefab: {fileID: 8245844661057312884, guid: 94d6e84784ea3dc4e995de358d532425,
     type: 3}
-  playerPrefab: {fileID: 8421221322342126995, guid: 77c5e011e85bd62418729519b79271c4,
+  RoachPrefab: {fileID: 5325976510104753575, guid: 85fd52b3458f5ca4b93da52437217828,
     type: 3}
-  mapObject: {fileID: 0}
 --- !u!4 &1241336699
 Transform:
   m_ObjectHideFlags: 0

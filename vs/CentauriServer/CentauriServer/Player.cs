@@ -9,46 +9,19 @@ namespace Server
         public string username;
         public ETeam teamId;
 
-        public Vector2 position;
-        public EObjectDirection direction;
+        public CharacterObject gameObj;
 
-        private Queue<PlayerCommandData> playerCommandQueue;
-        private List<PlayerCommandData> playerCommandHistory;
-
-        public Player(int _id, string _username, ETeam _teamId, Vector2 _spawnPosition)
+        public Player(int _id, string _username, ETeam _teamId)
         {
             id = _id;
             username = _username;
             teamId = _teamId;
-            position = _spawnPosition;
-            direction = EObjectDirection.TOP;
-
-            playerCommandQueue = new Queue<PlayerCommandData>();
-            playerCommandHistory = new List<PlayerCommandData>();
+            gameObj = null;
         }
 
-        public void pushCommand(PlayerCommandData _command)
+        public override string ToString()
         {
-            playerCommandQueue.Enqueue(_command);
-        }
-
-        public void Update()
-        {
-            while(playerCommandQueue.Count > 0)
-            {
-
-                //TODO add validation checks
-                PlayerCommandData command = playerCommandQueue.Dequeue();
-                position = command.position;
-                direction = command.direction;
-
-                playerCommandHistory.Add(command);
-            }
-
-            while(playerCommandHistory.Count > 10)
-            {
-                playerCommandHistory.RemoveAt(0);
-            }
+            return $"[PLAYER: (id: {id}, username: {username}, teamId: {teamId})]";
         }
     }
 }

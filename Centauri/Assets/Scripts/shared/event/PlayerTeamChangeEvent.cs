@@ -26,6 +26,11 @@ public class PlayerTeamChangeEvent : Event
         _packet.Write(fromTeamId);
         _packet.Write(toTeamId);
     }
+
+    public override string GetName()
+    {
+        return $"PlayerTeamChangeEvent (playerId: {playerId}, fromTeamId: {fromTeamId}, toTeamId: {toTeamId})";
+    }
 }
 
 

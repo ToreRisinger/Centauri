@@ -3,8 +3,8 @@
 class MarineObject : CharacterObject
 {
 
-    public MarineObject(Vector2 _position, EObjectDirection _direction) : 
-        base(ECharacterType.MARINE, Stats.MARINE_HP, Stats.MARINE_REGEN, Stats.MARINE_SPEED, TeamManager.marineTeam.GetTeamId(), _position, _direction)
+    public MarineObject(int _playerId, Vector2 _position) : 
+        base(_playerId, ECharacterType.MARINE, Stats.MARINE_HP, Stats.MARINE_REGEN, Stats.MARINE_SPEED, TeamManager.marineTeam.GetTeamId(), _position, EObjectDirection.TOP)
     {
 
     }

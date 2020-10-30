@@ -1,6 +1,7 @@
 ﻿using Shared;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -8,17 +9,18 @@ public class GameManager : MonoBehaviour
     public int turnNumber = 0;
 
     public static GameManager instance;
-
-    public static Dictionary<int, PlayerManager> players = new Dictionary<int, PlayerManager>();
+    public static Dictionary<int, Player> players = new Dictionary<int, Player>();
+    public static Dictionary<int, CharacterObject> characters = new Dictionary<int, CharacterObject>();
+    public static Dictionary<int, BuildingObject> buildings = new Dictionary<int, BuildingObject>();
 
     private Queue<GameState> gameStateQueue = new Queue<GameState>();
     private List<GameState> gameStateHistory = new List<GameState>();
-    
-    public GameObject localPlayerPrefab;
-    public GameObject playerPrefab;
 
-    public Map map;
-    public GameObject mapObject;
+    public GameObject MarinePrefab;
+    public GameObject RoachPrefab;
+
+    private Map map;
+    private GameObject mapObject;
 
     private void Awake()
     {
@@ -34,98 +36,80 @@ public class GameManager : MonoBehaviour
     }
 
     #region FixedUpdate
+
     private void FixedUpdate()
     {
         //TODO now we apply directly -> fix add interpolation between old and new
-        while(gameStateQueue.Count > 0)
+        while (gameStateQueue.Count > 0)
         {
             GameState gameState = gameStateQueue.Dequeue();
 
             //Handle events
             handleEvents(gameState.events);
 
-            //Update player states
-            HashSet<int> foundPlayers = new HashSet<int>();
-            for(int i = 0; i < gameState.players.Count; i++)
+            //Update character states
+            foreach(CharacterStateData characterStateData in gameState.characters)
             {
-                PlayerStateData playerStateData = gameState.players[i];
-                foundPlayers.Add(playerStateData.id);
-                if (players.ContainsKey(playerStateData.id))
+                if(!characters.ContainsKey(characterStateData.id))
                 {
-                    if (playerStateData.id != Client.instance.myId)
+                    OnCharacterShouldSpawn(characterStateData);
+                } else 
+                {
+                    CharacterObject character = characters[characterStateData.id];
+                    
+                    character.hp = characterStateData.hp;
+                    character.speed = characterStateData.speed;
+
+                    //Only update other players
+                    if (players[Client.instance.myId].character != null && players[Client.instance.myId].character.id != characterStateData.id) 
                     {
-                        players[playerStateData.id].Move(playerStateData.position);
-                        players[playerStateData.id].direction = playerStateData.direction;
+                        character.direction = characterStateData.direction;
+                        character.Move(new Vector2(characterStateData.position.X, characterStateData.position.Y));
                     }
-                    players[playerStateData.id].teamId = playerStateData.teamId;
                 }
             }
 
-            //Remove players that are no longer updated
-            List<int> playersToRemove = new List<int>();
-            foreach(PlayerManager playerManager in players.Values)
+            //Update building states
+            foreach (BuildingStateData buildingStateData in gameState.buildings)
             {
-                if(!foundPlayers.Contains(playerManager.id))
-                {
-                    playersToRemove.Add(playerManager.id);
-                }
+                
             }
 
-            foreach (int playerIdToRemove in playersToRemove)
+
+            //Handle local player input
+            if (players.ContainsKey(Client.instance.myId) && players[Client.instance.myId].character != null)
             {
-                RemovePlayer(playerIdToRemove);
+                Player localPlayer = players[Client.instance.myId];
+                CharacterObject character = localPlayer.character;
+                float delta = Time.deltaTime;
+                HashSet<EPlayerAction> actions = PlayerController.GetActions();
+
+                MoveLocalPlayer(character, actions, delta);
+                character.SetDirection(actions);
+                EObjectDirection direction = character.direction;
+                UnityEngine.Vector2 characterPosition = character.transform.position;
+
+                //Send player command to server
+                PlayerCommandData cmdData = new PlayerCommandData(turnNumber, delta, new System.Numerics.Vector2(characterPosition.x, characterPosition.y), direction, actions);
+                ClientSend.PlayerCommand(cmdData);
             }
-            
+
+
             gameStateHistory.Add(gameState);
             turnNumber = gameState.turnNumber;
         }
 
-        if(gameStateHistory.Count > 5)
+        if (gameStateHistory.Count > 5)
         {
             gameStateHistory.RemoveAt(0);
         }
-        
-        TeamManager.centauriTeam.clearTeam();
-        TeamManager.marineTeam.clearTeam();
-        TeamManager.spectatorTeam.clearTeam();
-
-        //Set teams
-        foreach (PlayerManager p in players.Values)
-        {
-            TeamManager.getTeam(p.teamId).AddPlayer(p.id);
-        }
-
-        //Move local player
-        if (players.ContainsKey(Client.instance.myId))
-        {
-            PlayerManager localPlayer = players[Client.instance.myId];
-            float delta = Time.deltaTime;
-            HashSet<EPlayerAction> actions = PlayerController.GetActions();
-
-            MoveLocalPlayer(localPlayer, actions, delta);
-            localPlayer.SetDirection(actions);
-            EObjectDirection direction = localPlayer.direction;
-            UnityEngine.Vector2 localPlayerPosition = localPlayer.transform.position;
-
-            //Send player command to server
-            ClientSend.PlayerCommand(actions, localPlayerPosition, direction, turnNumber, delta);
-        }
     }
 
-    private void MoveLocalPlayer(PlayerManager _localPlayer, HashSet<EPlayerAction> actions, float _delta)
+    private void MoveLocalPlayer(CharacterObject character, HashSet<EPlayerAction> actions, float _delta)
     {
-        System.Numerics.Vector2 currentPosition = new System.Numerics.Vector2(_localPlayer.transform.position.x, _localPlayer.transform.position.y);
-        System.Numerics.Vector2 newPosition = PlayerMovement.GetNewPosition(currentPosition, actions, _delta);
-        _localPlayer.MoveVelocity(new UnityEngine.Vector2(newPosition.X, newPosition.Y));
-    }
-
-    private void RemovePlayer(int id)
-    {
-        if (players.ContainsKey(id))
-        {
-            players[id].Destroy();
-            players.Remove(id);
-        }
+        System.Numerics.Vector2 currentPosition = new System.Numerics.Vector2(character.transform.position.x, character.transform.position.y);
+        System.Numerics.Vector2 newPosition = PlayerMovement.GetNewPosition(currentPosition, actions, _delta, character.speed);
+        character.Move(new UnityEngine.Vector2(newPosition.X, newPosition.Y));
     }
 
     private Dictionary<int, Action<Event>> eventMap = new Dictionary<int, Action<Event>>
@@ -134,9 +118,7 @@ public class GameManager : MonoBehaviour
         {(int)EventTypes.ServerEvents.PLAYER_TEAM_CHANGE, (evnt) => { GameManager.instance.onPlayerTeamChange(((PlayerTeamChangeEvent)evnt)); } },
         {(int)EventTypes.ServerEvents.PLAYER_JOINED, (evnt) => {
             PlayerJoinedEvent playerJoinedEvent = (PlayerJoinedEvent)evnt;
-            System.Numerics.Vector2 spawnPos = playerJoinedEvent.spawnPosition;
-            Vector2 spawnPosition = new Vector2(spawnPos.X, spawnPos.Y);
-            GameManager.instance.onPlayerJoin(playerJoinedEvent.playerId, playerJoinedEvent.username, playerJoinedEvent.teamId, spawnPosition);
+            GameManager.instance.onPlayerJoin(playerJoinedEvent.playerId, playerJoinedEvent.username, playerJoinedEvent.teamId);
         }},
 
     };
@@ -156,42 +138,70 @@ public class GameManager : MonoBehaviour
 
     private void onPlayerDisconnect(PlayerDisconnectedEvent evnt)
     {
+        Debug.Log("onPlayerDisconnect");
         if(players.ContainsKey(evnt.playerDisconnectedId))
         {
-            PlayerManager player = players[evnt.playerDisconnectedId];
-            Debug.Log("Player " + player.name + " (" + player.id + ") disconnected.");
-            RemovePlayer(player.id);
-        }  
+            Debug.Log("onPlayerDisconnect1");
+            Player player = players[evnt.playerDisconnectedId];
+            Debug.Log("Player " + player.username + " (" + player.id + ") disconnected.");
+            players.Remove(player.id);
+            if(player.character != null && characters.ContainsKey(player.character.id))
+            {
+                CharacterObject character = characters[player.character.id];
+                character.Destroy();
+                characters.Remove(character.id);
+            }
+        }
     }
 
-    public void onPlayerJoin(int _id, string _username, ETeam _teamId, UnityEngine.Vector2 _position)
+    public void onPlayerJoin(int _id, string _username, ETeam _teamId)
     {
         if (!players.ContainsKey(_id))
         {
             Debug.Log("Player " + _username + " (" + _id + ") joined the game.");
             Debug.Log("Player " + _username + "(" + _id + ") joined team " + TeamManager.getTeam(_teamId).getTeamName() + ".");
 
-        
-            GameObject _player;
-            if (_id == Client.instance.myId)
-            {
-                _player = Instantiate(localPlayerPrefab, _position, UnityEngine.Quaternion.Euler(UnityEngine.Vector3.forward));
-            }
-            else
-            {
-                _player = Instantiate(playerPrefab, _position, UnityEngine.Quaternion.Euler(UnityEngine.Vector3.forward));
-            }
-
-            _player.GetComponent<PlayerManager>().id = _id;
-            _player.GetComponent<PlayerManager>().username = _username;
-            _player.GetComponent<PlayerManager>().teamId = _teamId;
-            players.Add(_id, _player.GetComponent<PlayerManager>());
+            players.Add(_id, new Player(_id, _username, _teamId));
         } 
     }
 
     public void onPlayerTeamChange(PlayerTeamChangeEvent evnt)
     {
         //TODO
+    }
+
+    public void OnCharacterShouldSpawn(CharacterStateData characterStateData)
+    {
+        if (players.ContainsKey(characterStateData.playerId)) {
+            GameObject gameObject;
+            Debug.Log(characterStateData.type);
+            switch (characterStateData.type)
+            {
+                case ECharacterType.MARINE:
+                    gameObject = Instantiate(MarinePrefab, new Vector2(characterStateData.position.X, characterStateData.position.Y), UnityEngine.Quaternion.Euler(UnityEngine.Vector3.forward));
+                    break;
+                case ECharacterType.ROACH:
+                    gameObject = Instantiate(RoachPrefab, new Vector2(characterStateData.position.X, characterStateData.position.Y), UnityEngine.Quaternion.Euler(UnityEngine.Vector3.forward));
+                    break;
+                default: return;
+            }
+
+            Player owner = players[characterStateData.playerId];
+            CharacterObject character = gameObject.GetComponent<MarineObject>();
+            character.direction = characterStateData.direction;
+            character.type = characterStateData.type;
+            character.hp = characterStateData.hp;
+            character.speed = characterStateData.speed;
+            character.id = characterStateData.id;
+            character.teamId = characterStateData.teamId;
+            owner.character = character;
+
+            if(owner.id == Client.instance.myId)
+            {
+                character.SetAsLocalPlayer();
+            }
+            characters.Add(character.id, character);
+        }
     }
 
     #endregion

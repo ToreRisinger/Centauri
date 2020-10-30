@@ -23,18 +23,7 @@ namespace Server
 
         public static void PlayerCommand(int _fromClient, Packet _packet)
         {
-            int _turnNumber = _packet.ReadInt();
-            float _deltaTime = _packet.ReadFloat();
-            Vector2 _position = _packet.ReadVector2();
-            int _direction = _packet.ReadInt();
-            int nrOfActions = _packet.ReadInt();
-            HashSet<EPlayerAction> _actions = new HashSet<EPlayerAction>();
-            for (int i = 0; i < nrOfActions; i++)
-            {
-                _actions.Add((EPlayerAction)_packet.ReadInt());
-            }
-            PlayerCommandData cmd = new PlayerCommandData(_turnNumber, _deltaTime, _position, (EObjectDirection) _direction, _actions);
-            //GameServer.clients[_fromClient].player.pushCommand(cmd);
+            PlayerCommandData cmd = new PlayerCommandData(_packet);
             GameLogic.onPlayerCommand(_fromClient, cmd);
         }
     }

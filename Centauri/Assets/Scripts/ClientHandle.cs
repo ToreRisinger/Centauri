@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
+﻿using System.Net;
 using UnityEngine;
 
 public class ClientHandle : MonoBehaviour
@@ -27,62 +25,14 @@ public class ClientHandle : MonoBehaviour
             int _playerId = _packet.ReadInt();
             string _username = _packet.ReadString();
             int _teamId = _packet.ReadInt();
-            Vector2 _position = _packet.ReadUnityVector2();
-            GameManager.instance.onPlayerJoin(_playerId, _username, (ETeam)_teamId, _position);
+            GameManager.instance.onPlayerJoin(_playerId, _username, (ETeam)_teamId);
         }
     }
 
     public static void GameState(Packet _packet)
     {
-        //TurnNumber
-        int turnNumber = _packet.ReadInt();
+        GameState gameState = new GameState(_packet);
 
-        //Player states
-        int nrOfPlayers = _packet.ReadInt();
-        List<PlayerStateData> playerStates = new List<PlayerStateData>();
-        for (int i = 0; i < nrOfPlayers; i++)
-        {
-            int _id = _packet.ReadInt();
-            int _teamId = _packet.ReadInt();
-            Vector2 _position = _packet.ReadUnityVector2();
-            EObjectDirection direction = (EObjectDirection)_packet.ReadInt();
-            playerStates.Add(new PlayerStateData(_id, (ETeam)_teamId, _position, direction));
-        }
-
-        //Events
-        Queue<Event> events = new Queue<Event>();
-        int nrOfEvents = _packet.ReadInt();
-        for (int i = 0; i < nrOfEvents; i++)
-        {
-            events.Enqueue(ReadEventFromPacket(_packet));
-        }
-
-        GameManager.instance.pushGameState(new GameState(turnNumber, playerStates, events));
+        GameManager.instance.pushGameState(gameState);
     }
-
-    private static Dictionary<int, Func<int, Packet, Event>> eventMap = new Dictionary<int, Func<int, Packet, Event>>
-    {
-        {(int)EventTypes.ServerEvents.PLAYER_DISCONNECTED, (eventId, packet) => { return new PlayerDisconnectedEvent(eventId, packet); } },
-        {(int)EventTypes.ServerEvents.PLAYER_JOINED, (eventId, packet) => { return new PlayerJoinedEvent(eventId, packet); } },
-        {(int)EventTypes.ServerEvents.PLAYER_TEAM_CHANGE, (eventId, packet) => { return new PlayerTeamChangeEvent(eventId, packet); } }
-
-    };
-
-    private static Event ReadEventFromPacket(Packet _packet)
-    {
-        int eventId = _packet.ReadInt();
-        return eventMap[eventId](eventId, _packet);
-    }
-
-    /*
-    public static void PlayerState(Packet _packet)
-    {
-        int _id = _packet.ReadInt();
-        Vector2 _position = _packet.ReadVector2();
-        if(GameManager.players.ContainsKey(_id))
-        {
-             GameManager.instance.MovePlayer(_id, _position);
-        }
-    }
-    */
 }

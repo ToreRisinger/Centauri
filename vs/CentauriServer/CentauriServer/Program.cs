@@ -9,19 +9,28 @@ namespace Server
         private static bool isRunning = false;
         static void Main(string[] args)
         {
-            Console.Title = "Game Server";
-            isRunning = true;
+            try
+            {
+                
+                Console.Title = "Game Server";
+                isRunning = true;
 
-            Thread mainThread = new Thread(new ThreadStart(MainThread));
-            mainThread.Start();
+                Thread mainThread = new Thread(new ThreadStart(MainThread));
+                mainThread.Start();
 
-            GameServer.Start(10, 26950);
+                GameServer.Start(10, 26950);
+            }
+            catch (Exception e) {
+                Console.Write(e.StackTrace.ToString());
+            }
         }
 
         private static void MainThread()
         {
             Console.WriteLine($"Main thread started. Running at {Constants.TICKS_PER_SEC} ticks per second.");
             DateTime _nextLoop = DateTime.Now;
+
+            GameLogic.init();
 
             while(isRunning)
             {
@@ -37,6 +46,16 @@ namespace Server
                     }
                 }
             }
+        }
+
+        static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
+        {
+            Console.WriteLine(e.Exception.Message);
+        }
+
+        static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Console.WriteLine((e.ExceptionObject as Exception).Message);
         }
     }
 }
