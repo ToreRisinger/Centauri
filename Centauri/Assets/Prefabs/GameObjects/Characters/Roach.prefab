@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7244394770982941098}
   - component: {fileID: 396960122098992954}
   m_Layer: 0
-  m_Name: Marine
+  m_Name: Roach
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -81,7 +81,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
 --- !u!114 &396960122098992954
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -95,17 +95,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 0
-  position: {x: 0, y: 0}
   type: 0
   direction: 0
   teamId: 0
   hp: 0
   speed: 0
-  topSprite: {fileID: 21300000, guid: 0af4edc39776541488573a1edf348f23, type: 3}
-  topRightSprite: {fileID: 21300000, guid: f97adb9080d7af142a61bd7d36d41a9c, type: 3}
-  rightSprite: {fileID: 21300000, guid: 34210c75793876b47a0a0dfd3f42c612, type: 3}
-  bottomRightSprite: {fileID: 21300000, guid: a7bf93024c6798545b9851a21eae6de2, type: 3}
-  bottomSprite: {fileID: 21300000, guid: f27054d118b2895449bc1e4961525014, type: 3}
-  bottomLeftSprite: {fileID: 21300000, guid: 58d98bf8df4b06b4889c49e59a1c2ef9, type: 3}
-  leftSprite: {fileID: 21300000, guid: bc0b1950b67fabe49a05850798516492, type: 3}
-  topLeftSprite: {fileID: 21300000, guid: 815480219c74af749b98122bfa78c19c, type: 3}
+  topSprite: {fileID: 21300000, guid: 4b81dadc4bcbdf6448e7a5d86495d48b, type: 3}
+  topRightSprite: {fileID: 21300000, guid: ef3103a3a3cd65d4cb950e800f084f70, type: 3}
+  rightSprite: {fileID: 21300000, guid: 914885cf1c7937c4baa71100c4b82231, type: 3}
+  bottomRightSprite: {fileID: 21300000, guid: b6359727b3950204d9c6b8153c3cce11, type: 3}
+  bottomSprite: {fileID: 21300000, guid: de7da9434bc57474d9857a467f3b0096, type: 3}
+  bottomLeftSprite: {fileID: 21300000, guid: c538d762ac5b7934fad6509021b23c27, type: 3}
+  leftSprite: {fileID: 21300000, guid: c5a9f0373a668d84eb93a561da12c280, type: 3}
+  topLeftSprite: {fileID: 21300000, guid: 1c0ea4aee2121cc4a88e0987ff70b250, type: 3}

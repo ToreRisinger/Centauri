@@ -21,7 +21,7 @@ namespace Server
                 GameServer.Start(10, 26950);
             }
             catch (Exception e) {
-                Console.Write(e.StackTrace.ToString());
+                Console.WriteLine(e.ToString());
             }
         }
 
