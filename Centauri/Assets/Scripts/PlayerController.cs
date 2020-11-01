@@ -27,19 +27,22 @@ public class PlayerController : MonoBehaviour
         KeyCode.Space,
         KeyCode.KeypadEnter,
         KeyCode.LeftShift,
-        KeyCode.RightShift
+        KeyCode.RightShift,
+        KeyCode.LeftArrow,
+        KeyCode.RightArrow,
+        KeyCode.UpArrow,
+        KeyCode.DownArrow
     };
 
     private static List<ActionConfiguration> actionConfigurations = new List<ActionConfiguration> {
-        new ActionConfiguration(EPlayerAction.UP, KeyCode.W, false),
-        new ActionConfiguration(EPlayerAction.DOWN, KeyCode.S, false),
-        new ActionConfiguration(EPlayerAction.RIGHT, KeyCode.D, false),
-        new ActionConfiguration(EPlayerAction.LEFT, KeyCode.A, false),
+        new ActionConfiguration(EPlayerAction.UP, KeyCode.UpArrow, false),
+        new ActionConfiguration(EPlayerAction.DOWN, KeyCode.DownArrow, false),
+        new ActionConfiguration(EPlayerAction.RIGHT, KeyCode.RightArrow, false),
+        new ActionConfiguration(EPlayerAction.LEFT, KeyCode.LeftArrow, false),
         new ActionConfiguration(EPlayerAction.HOLD_DIRECTION, KeyCode.LeftControl, false),
         new ActionConfiguration(EPlayerAction.HOLD_POSITION, KeyCode.LeftShift, false)
     };
 
-    private static bool[] movementInputs;
     private static HashSet<KeyCode> holdKeys;
     private static HashSet<KeyCode> pressedKeys;
 
@@ -53,7 +56,6 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-        movementInputs = new bool[7];
 
         holdKeys = new HashSet<KeyCode>();
         pressedKeys = new HashSet<KeyCode>();
@@ -111,17 +113,6 @@ public class PlayerController : MonoBehaviour
                 tmpHoldKeys.Add(key);
             }
         }
-
-        movementInputs = new bool[]
-        {
-            Input.GetKey(KeyCode.W),
-            Input.GetKey(KeyCode.A),
-            Input.GetKey(KeyCode.S),
-            Input.GetKey(KeyCode.D),
-            Input.GetKey(KeyCode.LeftControl),
-            Input.GetKey(KeyCode.RightControl),
-            Input.GetKey(KeyCode.LeftShift)
-        };
     }
 
     public static bool isKeyHold(KeyCode keyCode) 
