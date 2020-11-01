@@ -22,6 +22,11 @@ namespace Server
             characters = new Dictionary<int, CharacterObject>();
             events = new Queue<Event>();
             turnNumber = 0;
+
+            BuildingObject commandCenter = new CommandCenterObject(Map.mapPosition + map.getMarineSpawnPoint());
+            BuildingObject hive = new HiveObject(Map.mapPosition + map.getAlienSpawnPoint());
+            buildings.Add(commandCenter.id, commandCenter);
+            buildings.Add(hive.id, hive);
         }
 
         public static void Update()

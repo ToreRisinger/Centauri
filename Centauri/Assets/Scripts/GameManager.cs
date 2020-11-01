@@ -16,8 +16,10 @@ public class GameManager : MonoBehaviour
     private Queue<GameState> gameStateQueue = new Queue<GameState>();
     private List<GameState> gameStateHistory = new List<GameState>();
 
-    public GameObject MarinePrefab;
-    public GameObject RoachPrefab;
+    public GameObject marinePrefab;
+    public GameObject roachPrefab;
+    public GameObject commandCenterPrefab;
+    public GameObject hivePrefab;
 
     private Map map;
     private GameObject mapObject;
@@ -72,9 +74,15 @@ public class GameManager : MonoBehaviour
             //Update building states
             foreach (BuildingStateData buildingStateData in gameState.buildings)
             {
-                
+                if (!buildings.ContainsKey(buildingStateData.id))
+                {
+                    onBuildingShouldSpawn(buildingStateData);
+                } else
+                {
+                    //TODO
+                }
+                   
             }
-
 
             //Handle local player input
             if (players.ContainsKey(Client.instance.myId) && players[Client.instance.myId].character != null)
@@ -170,6 +178,26 @@ public class GameManager : MonoBehaviour
         //TODO
     }
 
+    public void onBuildingShouldSpawn(BuildingStateData buildingStateData)
+    {
+        GameObject gameObject;
+        switch (buildingStateData.type)
+        {
+            case EBuildingType.COMMAND_CENTER:
+                gameObject = Instantiate(commandCenterPrefab, new Vector2(buildingStateData.position.X, buildingStateData.position.Y), UnityEngine.Quaternion.Euler(UnityEngine.Vector3.forward));
+                break;
+            case EBuildingType.HIVE:
+                gameObject = Instantiate(hivePrefab, new Vector2(buildingStateData.position.X, buildingStateData.position.Y), UnityEngine.Quaternion.Euler(UnityEngine.Vector3.forward));
+                break;
+            default: return;
+        }
+
+        BuildingObject building = gameObject.GetComponent<BuildingObject>();
+        //TODO building.
+        building.id = buildingStateData.id;
+        buildings.Add(building.id, building);
+    }
+
     public void OnCharacterShouldSpawn(CharacterStateData characterStateData)
     {
         if (players.ContainsKey(characterStateData.playerId)) {
@@ -178,16 +206,16 @@ public class GameManager : MonoBehaviour
             switch (characterStateData.type)
             {
                 case ECharacterType.MARINE:
-                    gameObject = Instantiate(MarinePrefab, new Vector2(characterStateData.position.X, characterStateData.position.Y), UnityEngine.Quaternion.Euler(UnityEngine.Vector3.forward));
+                    gameObject = Instantiate(marinePrefab, new Vector2(characterStateData.position.X, characterStateData.position.Y), UnityEngine.Quaternion.Euler(UnityEngine.Vector3.forward));
                     break;
                 case ECharacterType.ROACH:
-                    gameObject = Instantiate(RoachPrefab, new Vector2(characterStateData.position.X, characterStateData.position.Y), UnityEngine.Quaternion.Euler(UnityEngine.Vector3.forward));
+                    gameObject = Instantiate(roachPrefab, new Vector2(characterStateData.position.X, characterStateData.position.Y), UnityEngine.Quaternion.Euler(UnityEngine.Vector3.forward));
                     break;
                 default: return;
             }
 
             Player owner = players[characterStateData.playerId];
-            CharacterObject character = gameObject.GetComponent<MarineObject>();
+            CharacterObject character = gameObject.GetComponent<CharacterObject>();
             character.direction = characterStateData.direction;
             character.type = characterStateData.type;
             character.hp = characterStateData.hp;

@@ -688,9 +688,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   turnNumber: 0
-  MarinePrefab: {fileID: 8245844661057312884, guid: 94d6e84784ea3dc4e995de358d532425,
+  marinePrefab: {fileID: 8245844661057312884, guid: 94d6e84784ea3dc4e995de358d532425,
     type: 3}
-  RoachPrefab: {fileID: 5325976510104753575, guid: 85fd52b3458f5ca4b93da52437217828,
+  roachPrefab: {fileID: 5325976510104753575, guid: 85fd52b3458f5ca4b93da52437217828,
+    type: 3}
+  commandCenterPrefab: {fileID: 5021961274748974203, guid: a82b17790f321e7438296d06ec9aee64,
+    type: 3}
+  hivePrefab: {fileID: 7063514814564773366, guid: 09667cab2cdce9f4db5c560e9041ad2f,
     type: 3}
 --- !u!4 &1241336699
 Transform:

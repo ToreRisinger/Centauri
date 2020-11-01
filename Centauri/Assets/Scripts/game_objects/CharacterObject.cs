@@ -1,9 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class CharacterObject : GGameObject
 {
+
+    public Sprite topSprite;
+    public Sprite topRightSprite;
+    public Sprite rightSprite;
+    public Sprite bottomRightSprite;
+    public Sprite bottomSprite;
+    public Sprite bottomLeftSprite;
+    public Sprite leftSprite;
+    public Sprite topLeftSprite;
 
     public ECharacterType type;
     public EObjectDirection direction;
@@ -62,21 +70,45 @@ public abstract class CharacterObject : GGameObject
         }
     }
 
-    protected abstract Sprite GetTopSprite();
+    protected Sprite GetBottomLeftSprite()
+    {
+        return bottomLeftSprite;
+    }
 
-    protected abstract Sprite GetTopRightSprite();
+    protected Sprite GetBottomRightSprite()
+    {
+        return bottomRightSprite;
+    }
 
-    protected abstract Sprite GetRightSprite();
+    protected Sprite GetBottomSprite()
+    {
+        return bottomSprite;
+    }
 
-    protected abstract Sprite GetBottomRightSprite();
+    protected Sprite GetLeftSprite()
+    {
+        return leftSprite;
+    }
 
-    protected abstract Sprite GetBottomSprite();
+    protected Sprite GetRightSprite()
+    {
+        return rightSprite;
+    }
 
-    protected abstract Sprite GetBottomLeftSprite();
+    protected Sprite GetTopLeftSprite()
+    {
+        return topLeftSprite;
+    }
 
-    protected abstract Sprite GetLeftSprite();
+    protected Sprite GetTopRightSprite()
+    {
+        return topRightSprite;
+    }
 
-    protected abstract Sprite GetTopLeftSprite();
+    protected Sprite GetTopSprite()
+    {
+        return topSprite;
+    }
 
     private void SetSprite()
     {
