@@ -13,6 +13,18 @@ public abstract class CharacterObject : GGameObject
     public Sprite leftSprite;
     public Sprite topLeftSprite;
 
+    public Vector2 topAttackPoint;
+    public Vector2 topRightAttackPoint;
+    public Vector2 rightAttackPoint;
+    public Vector2 bottomRightAttackPoint;
+    public Vector2 bottomAttackPoint;
+    public Vector2 bottomLeftAttackPoint;
+    public Vector2 leftAttackPoint;
+    public Vector2 topLeftAttackPoint;
+
+    public Vector2 attackPoint;
+    public Vector2 attackOrigin;
+
     public ECharacterType type;
     public EObjectDirection direction;
     public ETeam teamId;
@@ -22,13 +34,22 @@ public abstract class CharacterObject : GGameObject
     private Rigidbody2D rb;
     private bool isLocalCharacter = false;
 
+    void FixedUpdate()
+    {
+        float delta = Time.deltaTime;
+        foreach(Ability ability in GetAbilities())
+        {
+            ability.Update(delta);
+        }
+
+    }
 
     void Update()
     {
-        SetSprite();
+        UpdateDirection();
     }
 
-    public void SetDirection(HashSet<EPlayerAction> _actions)
+    public void SetDirection(List<EPlayerAction> _actions)
     {
         if (_actions.Contains(EPlayerAction.HOLD_DIRECTION))
         {
@@ -68,6 +89,37 @@ public abstract class CharacterObject : GGameObject
         {
             base.Move(_newPosition);
         }
+    }
+
+    public bool ActivateAbility(int index)
+    {
+        List<Ability> abilities = GetAbilities();
+        if(index >= abilities.Count)
+        {
+            return false;
+        }
+
+        return abilities[index].run(this);
+    }
+
+    public Vector2 GetAttackOrigin()
+    {
+        return attackOrigin;
+    }
+    public Vector2 GetAttackPoint()
+    {
+        return attackPoint;
+    }
+
+    public Vector2 GetAttackDirection()
+    {
+        Vector2 attackOriginToAttackPoint = attackPoint - attackOrigin;
+        return attackOriginToAttackPoint.normalized;
+    }
+
+    public bool IsLocalCharacter()
+    {
+        return isLocalCharacter;
     }
 
     protected Sprite GetBottomLeftSprite()
@@ -110,38 +162,48 @@ public abstract class CharacterObject : GGameObject
         return topSprite;
     }
 
-    private void SetSprite()
+    private void UpdateDirection()
     {
         switch (direction)
         {
             case EObjectDirection.TOP:
                 spriteRenderer.sprite = GetTopSprite();
+                attackPoint = topAttackPoint;
                 return;
             case EObjectDirection.TOP_RIGHT:
                 spriteRenderer.sprite = GetTopRightSprite();
+                attackPoint = topRightAttackPoint;
                 return;
             case EObjectDirection.RIGHT:
                 spriteRenderer.sprite = GetRightSprite();
+                attackPoint = rightAttackPoint;
                 return;
             case EObjectDirection.BOTTOM_RIGHT:
                 spriteRenderer.sprite = GetBottomRightSprite();
+                attackPoint = bottomRightAttackPoint;
                 return;
             case EObjectDirection.BOTTOM:
                 spriteRenderer.sprite = GetBottomSprite();
+                attackPoint = bottomAttackPoint;
                 return;
             case EObjectDirection.BOTTOM_LEFT:
                 spriteRenderer.sprite = GetBottomLeftSprite();
+                attackPoint = bottomLeftAttackPoint;
                 return;
             case EObjectDirection.LEFT:
                 spriteRenderer.sprite = GetLeftSprite();
+                attackPoint = leftAttackPoint;
                 return;
             case EObjectDirection.TOP_LEFT:
                 spriteRenderer.sprite = GetTopLeftSprite();
+                attackPoint = topLeftAttackPoint;
                 return;
             default:
                 spriteRenderer.sprite = GetTopSprite();
+                attackPoint = topLeftAttackPoint;
                 return;
         }
     }
 
+    public abstract List<Ability> GetAbilities();
 }

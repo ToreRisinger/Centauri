@@ -24,7 +24,8 @@ namespace Server
         public static void PlayerCommand(int _fromClient, Packet _packet)
         {
             PlayerCommandData cmd = new PlayerCommandData(_packet);
-            GameLogic.onPlayerCommand(_fromClient, cmd);
+            cmd.playerId = _fromClient;
+            GameLogic.onPlayerCommand(cmd);
         }
     }
 }

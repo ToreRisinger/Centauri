@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Security.Cryptography;
 
 namespace Server
 {
@@ -10,7 +11,8 @@ namespace Server
         private static Map map;
         private static Dictionary<int, Player> players;
         private static Dictionary<int, BuildingObject> buildings;
-        private static Dictionary<int, CharacterObject> characters;
+        public static Dictionary<int, CharacterObject> characters;
+        private static Queue<PlayerCommandData> playerCommands;
         private static Queue<Event> events;
         private static int turnNumber;
 
@@ -21,6 +23,7 @@ namespace Server
             buildings = new Dictionary<int, BuildingObject>();
             characters = new Dictionary<int, CharacterObject>();
             events = new Queue<Event>();
+            playerCommands = new Queue<PlayerCommandData>();
             turnNumber = 0;
 
             BuildingObject commandCenter = new CommandCenterObject(Map.mapPosition + map.getMarineSpawnPoint());
@@ -35,6 +38,8 @@ namespace Server
 
             ThreadManager.UpdateMain();
 
+            handlePlayerCommands();
+
             foreach(CharacterObject character in characters.Values)
             {
                 character.Update();
@@ -47,6 +52,55 @@ namespace Server
 
             SendGameState(turnNumber);
 
+        }
+
+        public static void handlePlayerCommands()
+        {
+            while(playerCommands.Count > 0)
+            {
+                PlayerCommandData playerCommandData = playerCommands.Dequeue();
+                
+                if(players.ContainsKey(playerCommandData.playerId) && players[playerCommandData.playerId].gameObj != null)
+                {
+                    Player player = players[playerCommandData.playerId];
+                    CharacterObject characterObject = player.gameObj;
+                    characterObject.position = playerCommandData.position;
+                    characterObject.direction = playerCommandData.direction;
+
+                    handlePlayerAbilities(characterObject, playerCommandData.abilityActivations);
+
+
+                }
+            }
+        }
+
+        private static void handlePlayerAbilities(CharacterObject characterObject, List<AbilityActivationData> abilityActivations)
+        {
+            foreach(AbilityActivationData abilityActivationData in abilityActivations)
+            {
+                activateAbility(characterObject, abilityActivationData);
+            }
+        }
+
+        private static void activateAbility(CharacterObject characterObject, AbilityActivationData abilityActivationData)
+        {
+            List<Ability> abilties = characterObject.GetAbilities();
+            if (abilties.Count > abilityActivationData.abilityIndex && abilties[abilityActivationData.abilityIndex].isEnabled()) 
+            {
+                bool success = abilties[abilityActivationData.abilityIndex].run(characterObject, abilityActivationData.attackPoint, abilityActivationData.direction);
+                if(success)
+                {
+                    PushEvent(new PlayerActivateAbilityEvent(characterObject.playerId, abilityActivationData.abilityIndex));
+                } 
+                else
+                {
+                    //TODO send back forced client update
+                }
+            } 
+            else
+            {
+                //TODO send back forced client update
+            }
         }
 
         private static void SendGameState(int turnNumber)
@@ -84,7 +138,7 @@ namespace Server
             CharacterObject obj;
 
             //Add player to a team
-            if (TeamManager.marineTeam.GetNrOfPlayers() > TeamManager.centauriTeam.GetNrOfPlayers())
+            if (!(TeamManager.marineTeam.GetNrOfPlayers() > TeamManager.centauriTeam.GetNrOfPlayers()))
             {
                 _newPlayerPosition = Map.mapPosition + new Vector2(map.getAlienSpawnPoint().X, map.getAlienSpawnPoint().Y);
                 TeamManager.centauriTeam.AddPlayer(_playerId);
@@ -112,12 +166,9 @@ namespace Server
             PushEvent(new PlayerJoinedEvent(_playerId, _playerName, _teamId));
         }
 
-        public static void onPlayerCommand(int playerId, PlayerCommandData cmd)
+        public static void onPlayerCommand(PlayerCommandData cmd)
         {
-            if(players.ContainsKey(playerId) && players[playerId].gameObj != null)
-            {
-                players[playerId].gameObj.pushCommand(cmd);
-            }
+            playerCommands.Enqueue(cmd);
         }
 
         public static void onPlayerLeft(int playerLeftId)
@@ -134,9 +185,14 @@ namespace Server
             }
         }
 
-        private static void PushEvent(Event evnt) 
+        public static void PushEvent(Event evnt) 
         {
             events.Enqueue(evnt);
+        }
+
+        public static Player GetPlayer(int id)
+        {
+            return players[id];
         }
     }
 }

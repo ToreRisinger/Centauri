@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Collections.Generic;
+using System.Numerics;
 
 public class AlphaObject : CharacterObject
 {
@@ -6,6 +7,11 @@ public class AlphaObject : CharacterObject
         base(_playerId, ECharacterType.ALPHA, Stats.ALPHA_HP, Stats.ALPHA_REGEN, Stats.ALPHA_SPEED, TeamManager.centauriTeam.GetTeamId(), _position, _direction)
     {
 
+    }
+
+    public override List<Ability> CreateAbilities()
+    {
+        return new List<Ability>();
     }
 }
 

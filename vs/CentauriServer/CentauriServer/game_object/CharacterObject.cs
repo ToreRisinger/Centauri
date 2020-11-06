@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Numerics;
 
-public class CharacterObject : HpObject
+public abstract class CharacterObject : HpObject
 {
-    private Queue<PlayerCommandData> commandQueue;
-    private List<PlayerCommandData> commandHistory;
-
+    public List<Ability> abilities;
     public ECharacterType characterType;
     public EObjectDirection direction;
 
@@ -21,33 +19,19 @@ public class CharacterObject : HpObject
         direction = _direction;
         characterType = _characterType;
         speed = _speed;
-
-        commandQueue = new Queue<PlayerCommandData>();
-        commandHistory = new List<PlayerCommandData>();
-    }
-
-    public void pushCommand(PlayerCommandData _command)
-    {
-        commandQueue.Enqueue(_command);
+        abilities = CreateAbilities();
     }
 
     public new void Update()
     {
         base.Update();
 
-        while (commandQueue.Count > 0)
-        {
-            //TODO add validation checks
-            PlayerCommandData command = commandQueue.Dequeue();
-            position = command.position;
-            direction = command.direction;
-
-            commandHistory.Add(command);
-        }
-
-        while (commandHistory.Count > 10)
-        {
-            commandHistory.RemoveAt(0);
-        }
     }
+
+    public List<Ability> GetAbilities()
+    {
+        return abilities;
+    }
+
+    public abstract List<Ability> CreateAbilities();
 }

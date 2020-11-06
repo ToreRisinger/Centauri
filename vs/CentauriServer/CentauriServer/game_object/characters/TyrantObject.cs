@@ -1,4 +1,5 @@
 ﻿
+using System.Collections.Generic;
 using System.Numerics;
 
 class TyrantObject : CharacterObject
@@ -7,6 +8,11 @@ class TyrantObject : CharacterObject
         base(_playerId, ECharacterType.TYRANT, Stats.TYRANT_HP, Stats.TYRANT_REGEN, Stats.TYRANT_SPEED, TeamManager.centauriTeam.GetTeamId(), _position, _direction)
     {
 
+    }
+
+    public override List<Ability> CreateAbilities()
+    {
+        return new List<Ability>();
     }
 }
 

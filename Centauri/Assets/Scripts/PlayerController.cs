@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -18,7 +19,12 @@ public class PlayerController : MonoBehaviour
     }
 
     private static List<KeyCode> keyList = new List<KeyCode> {
+        KeyCode.Q,
         KeyCode.W,
+        KeyCode.E,
+        KeyCode.R,
+        KeyCode.T,
+        KeyCode.Y,
         KeyCode.A,
         KeyCode.S,
         KeyCode.D,
@@ -31,10 +37,18 @@ public class PlayerController : MonoBehaviour
         KeyCode.LeftArrow,
         KeyCode.RightArrow,
         KeyCode.UpArrow,
-        KeyCode.DownArrow
+        KeyCode.DownArrow,
     };
 
     private static List<ActionConfiguration> actionConfigurations = new List<ActionConfiguration> {
+        new ActionConfiguration(EPlayerAction.ACTIVATE_ABILITY_0, KeyCode.Q, false),
+        new ActionConfiguration(EPlayerAction.ACTIVATE_ABILITY_1, KeyCode.W, false),
+        new ActionConfiguration(EPlayerAction.ACTIVATE_ABILITY_2, KeyCode.E, false),
+        new ActionConfiguration(EPlayerAction.ACTIVATE_ABILITY_3, KeyCode.R, false),
+        new ActionConfiguration(EPlayerAction.ACTIVATE_ABILITY_4, KeyCode.T, false),
+        new ActionConfiguration(EPlayerAction.ACTIVATE_ABILITY_5, KeyCode.Y, false),
+
+
         new ActionConfiguration(EPlayerAction.UP, KeyCode.UpArrow, false),
         new ActionConfiguration(EPlayerAction.DOWN, KeyCode.DownArrow, false),
         new ActionConfiguration(EPlayerAction.RIGHT, KeyCode.RightArrow, false),
@@ -130,8 +144,31 @@ public class PlayerController : MonoBehaviour
         return actionActivations.Contains(action);
     }
 
-    public static HashSet<EPlayerAction> GetActions()
+    public static List<EPlayerAction> GetActions()
     {
-        return actionActivations;
+        List<EPlayerAction> actions = actionActivations.ToList<EPlayerAction>().FindAll(action => 
+            action != EPlayerAction.ACTIVATE_ABILITY_0 &&
+            action != EPlayerAction.ACTIVATE_ABILITY_1 &&
+            action != EPlayerAction.ACTIVATE_ABILITY_2 &&
+            action != EPlayerAction.ACTIVATE_ABILITY_3 &&
+            action != EPlayerAction.ACTIVATE_ABILITY_4 &&
+            action != EPlayerAction.ACTIVATE_ABILITY_5
+            );
+
+        return actions;
+    }
+
+    public static List<EPlayerAction> GetAbilities()
+    {
+        List<EPlayerAction> abilities = actionActivations.ToList<EPlayerAction>().FindAll(action =>
+          action == EPlayerAction.ACTIVATE_ABILITY_0 ||
+          action == EPlayerAction.ACTIVATE_ABILITY_1 ||
+          action == EPlayerAction.ACTIVATE_ABILITY_2 ||
+          action == EPlayerAction.ACTIVATE_ABILITY_3 ||
+          action == EPlayerAction.ACTIVATE_ABILITY_4 ||
+          action == EPlayerAction.ACTIVATE_ABILITY_5
+          );
+
+        return abilities;
     }
 }

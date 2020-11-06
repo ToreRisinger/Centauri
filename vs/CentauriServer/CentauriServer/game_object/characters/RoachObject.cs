@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Collections.Generic;
+using System.Numerics;
 
 public class RoachObject : CharacterObject
 {
@@ -6,6 +7,14 @@ public class RoachObject : CharacterObject
         base(_playerId, ECharacterType.ROACH, Stats.ROACH_HP, Stats.ROACH_REGEN, Stats.ROACH_SPEED, TeamManager.centauriTeam.GetTeamId(), _position, EObjectDirection.TOP)
     {
 
+    }
+
+    public override List<Ability> CreateAbilities()
+    {
+        return new List<Ability>()
+        {
+            new RoachBite()
+        };
     }
 }
 

@@ -103,6 +103,16 @@ MonoBehaviour:
   bottomLeftSprite: {fileID: 21300000, guid: c538d762ac5b7934fad6509021b23c27, type: 3}
   leftSprite: {fileID: 21300000, guid: c5a9f0373a668d84eb93a561da12c280, type: 3}
   topLeftSprite: {fileID: 21300000, guid: 1c0ea4aee2121cc4a88e0987ff70b250, type: 3}
+  topAttackPoint: {x: 0, y: 0.45}
+  topRightAttackPoint: {x: 0.36, y: 0.3}
+  rightAttackPoint: {x: 0.44, y: 0.07}
+  bottomRightAttackPoint: {x: 0.4, y: -0.4}
+  bottomAttackPoint: {x: 0, y: -0.48}
+  bottomLeftAttackPoint: {x: -0.4, y: -0.4}
+  leftAttackPoint: {x: -0.44, y: 0.07}
+  topLeftAttackPoint: {x: -0.34, y: 0.3}
+  attackPoint: {x: 0, y: 0}
+  pivotToCenter: {x: 0, y: 0.06}
   type: 0
   direction: 0
   teamId: 0

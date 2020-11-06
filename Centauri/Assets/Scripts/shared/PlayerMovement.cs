@@ -6,7 +6,7 @@ namespace Shared
     class PlayerMovement
     {
 
-        public static Vector2 GetNewPosition(Vector2 _position, HashSet<EPlayerAction> _actions, float _delta, int _speed)
+        public static Vector2 GetNewPosition(Vector2 _position, List<EPlayerAction> _actions, float _delta, int _speed)
         {
             if(_actions.Contains(EPlayerAction.HOLD_POSITION))
             {

@@ -90,15 +90,17 @@ public class GameManager : MonoBehaviour
                 Player localPlayer = players[Client.instance.myId];
                 CharacterObject character = localPlayer.character;
                 float delta = Time.deltaTime;
-                HashSet<EPlayerAction> actions = PlayerController.GetActions();
+                List<EPlayerAction> actions = PlayerController.GetActions();
+                List<EPlayerAction> abilities = PlayerController.GetAbilities();
 
+                List<AbilityActivationData> abilityActivations = ActivateAbilities(character, abilities);
                 MoveLocalPlayer(character, actions, delta);
                 character.SetDirection(actions);
                 EObjectDirection direction = character.direction;
-                UnityEngine.Vector2 characterPosition = character.transform.position;
+                System.Numerics.Vector2 characterPosition = new System.Numerics.Vector2(character.transform.position.x, character.transform.position.y);
 
                 //Send player command to server
-                PlayerCommandData cmdData = new PlayerCommandData(turnNumber, delta, new System.Numerics.Vector2(characterPosition.x, characterPosition.y), direction, actions);
+                PlayerCommandData cmdData = new PlayerCommandData(turnNumber, delta, characterPosition, direction, actions, abilityActivations);
                 ClientSend.PlayerCommand(cmdData);
             }
 
@@ -113,7 +115,52 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void MoveLocalPlayer(CharacterObject character, HashSet<EPlayerAction> actions, float _delta)
+    private List<AbilityActivationData> ActivateAbilities(CharacterObject character, List<EPlayerAction> actions)
+    {
+        List<AbilityActivationData> actionsExecuted = new List<AbilityActivationData>();
+
+        foreach (EPlayerAction action in actions)
+        {
+            int index = 0;
+            bool actionExecuted = false;
+            switch (action)
+            {
+                case EPlayerAction.ACTIVATE_ABILITY_0:
+                    index = 0;
+                    break;
+                case EPlayerAction.ACTIVATE_ABILITY_1:
+                    index = 1;
+                    break;
+                case EPlayerAction.ACTIVATE_ABILITY_2:
+                    index = 2;
+                    break;
+                case EPlayerAction.ACTIVATE_ABILITY_3:
+                    index = 3;
+                    break;
+                case EPlayerAction.ACTIVATE_ABILITY_4:
+                    index = 4;
+                    break;
+                case EPlayerAction.ACTIVATE_ABILITY_5:
+                    index = 5;
+                    break;
+                default:
+                    break;
+            }
+
+            actionExecuted = character.ActivateAbility(index);
+
+            if (actionExecuted)
+            {
+                System.Numerics.Vector2 attackPoint = new System.Numerics.Vector2(character.attackPoint.x, character.attackPoint.y);
+                System.Numerics.Vector2 direction = new System.Numerics.Vector2(character.GetAttackDirection().x, character.GetAttackDirection().y);
+                actionsExecuted.Add(new AbilityActivationData(index, attackPoint, direction));
+            }
+        }
+
+        return actionsExecuted;
+    }
+
+    private void MoveLocalPlayer(CharacterObject character, List<EPlayerAction> actions, float _delta)
     {
         System.Numerics.Vector2 currentPosition = new System.Numerics.Vector2(character.transform.position.x, character.transform.position.y);
         System.Numerics.Vector2 newPosition = PlayerMovement.GetNewPosition(currentPosition, actions, _delta, character.speed);
@@ -128,6 +175,8 @@ public class GameManager : MonoBehaviour
             PlayerJoinedEvent playerJoinedEvent = (PlayerJoinedEvent)evnt;
             GameManager.instance.onPlayerJoin(playerJoinedEvent.playerId, playerJoinedEvent.username, playerJoinedEvent.teamId);
         }},
+        {(int)EventTypes.ServerEvents.DAMAGE_EVENT, (evnt) => { GameManager.instance.onPlayersReceiveDamage(((DamageEvent)evnt)); } },
+        {(int)EventTypes.ServerEvents.PLAYER_ACTIVATE_ABILITY, (evnt) => { GameManager.instance.onPlayerActivateAbility(((PlayerActivateAbilityEvent)evnt)); } },
 
     };
 
@@ -146,10 +195,9 @@ public class GameManager : MonoBehaviour
 
     private void onPlayerDisconnect(PlayerDisconnectedEvent evnt)
     {
-        Debug.Log("onPlayerDisconnect");
         if(players.ContainsKey(evnt.playerDisconnectedId))
         {
-            Debug.Log("onPlayerDisconnect1");
+            Debug.Log("onPlayerDisconnect");
             Player player = players[evnt.playerDisconnectedId];
             Debug.Log("Player " + player.username + " (" + player.id + ") disconnected.");
             players.Remove(player.id);
@@ -230,6 +278,23 @@ public class GameManager : MonoBehaviour
             }
             characters.Add(character.id, character);
         }
+    }
+
+    private void onPlayerActivateAbility(PlayerActivateAbilityEvent evnt)
+    {
+        if(evnt.playerId != Client.instance.myId && players.ContainsKey(evnt.playerId))
+        {
+            Player player = players[evnt.playerId];
+            if(player.character != null)
+            {
+                player.character.ActivateAbility(evnt.abilityIndex);
+            }
+        }
+    }
+
+    private void onPlayersReceiveDamage(DamageEvent evnt)
+    {
+        Debug.Log(evnt);
     }
 
     #endregion

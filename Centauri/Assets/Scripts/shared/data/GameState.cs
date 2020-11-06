@@ -69,7 +69,9 @@ public class GameState
     {
         {(int)EventTypes.ServerEvents.PLAYER_DISCONNECTED, (eventId, packet) => { return new PlayerDisconnectedEvent(eventId, packet); } },
         {(int)EventTypes.ServerEvents.PLAYER_JOINED, (eventId, packet) => { return new PlayerJoinedEvent(eventId, packet); } },
-        {(int)EventTypes.ServerEvents.PLAYER_TEAM_CHANGE, (eventId, packet) => { return new PlayerTeamChangeEvent(eventId, packet); } }
+        {(int)EventTypes.ServerEvents.PLAYER_TEAM_CHANGE, (eventId, packet) => { return new PlayerTeamChangeEvent(eventId, packet); } },
+        {(int)EventTypes.ServerEvents.DAMAGE_EVENT, (eventId, packet) => { return new DamageEvent(eventId, packet); } },
+        {(int)EventTypes.ServerEvents.PLAYER_ACTIVATE_ABILITY, (eventId, packet) => { return new PlayerActivateAbilityEvent(eventId, packet); } }
     };
 
     private static Event ReadEventFromPacket(Packet _packet)
