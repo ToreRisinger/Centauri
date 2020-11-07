@@ -27,7 +27,7 @@ public class RoachBite : Ability
            {
                 GameManager.characters[id].takeDamage();
            }
-        } 
+        }
         else
         {
 

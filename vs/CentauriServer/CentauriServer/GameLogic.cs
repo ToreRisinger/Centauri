@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using System.Security.Cryptography;
 
 namespace Server
 {
@@ -14,6 +13,7 @@ namespace Server
         public static Dictionary<int, CharacterObject> characters;
         private static Queue<PlayerCommandData> playerCommands;
         private static Queue<Event> events;
+        private static Dictionary<int, GameState> gameStates;
         private static int turnNumber;
 
         public static void init()
@@ -24,6 +24,7 @@ namespace Server
             characters = new Dictionary<int, CharacterObject>();
             events = new Queue<Event>();
             playerCommands = new Queue<PlayerCommandData>();
+            gameStates = new Dictionary<int, GameState>();
             turnNumber = 0;
 
             BuildingObject commandCenter = new CommandCenterObject(Map.mapPosition + map.getMarineSpawnPoint());
@@ -38,9 +39,12 @@ namespace Server
 
             ThreadManager.UpdateMain();
 
+            RemoveOldGameStates();
+
             handlePlayerCommands();
 
-            foreach(CharacterObject character in characters.Values)
+
+            foreach (CharacterObject character in characters.Values)
             {
                 character.Update();
             }
@@ -50,8 +54,41 @@ namespace Server
                 building.Update();
             }
 
-            SendGameState(turnNumber);
+            GameState gameState = CreateGameState(turnNumber);
+            gameStates.Add(turnNumber, gameState);
 
+            SendGameState(gameState);
+
+        }
+
+        private static void RemoveOldGameStates()
+        {
+            if(players.Count == 0)
+            {
+                gameStates = new Dictionary<int, GameState>();
+            }
+
+            //Remove old states
+            Queue<PlayerCommandData>.Enumerator enumerator = playerCommands.GetEnumerator();
+            Dictionary<int, int> turnsReceived = new Dictionary<int, int>();
+            while (enumerator.MoveNext())
+            {
+                PlayerCommandData cmd = enumerator.Current;
+                if (!turnsReceived.ContainsKey(cmd.turnNumber))
+                {
+                    turnsReceived.Add(cmd.turnNumber, 0);
+                }
+
+                turnsReceived[cmd.turnNumber] = turnsReceived[cmd.turnNumber] + 1;
+            }
+
+            foreach (KeyValuePair<int, int> entry in turnsReceived)
+            {
+                if(entry.Value >= players.Count)
+                {
+                    gameStates.Remove(entry.Key);
+                }
+            }
         }
 
         public static void handlePlayerCommands()
@@ -68,8 +105,6 @@ namespace Server
                     characterObject.direction = playerCommandData.direction;
 
                     handlePlayerAbilities(characterObject, playerCommandData.abilityActivations);
-
-
                 }
             }
         }
@@ -103,11 +138,8 @@ namespace Server
             }
         }
 
-        private static void SendGameState(int turnNumber)
+        private static GameState CreateGameState(int turnNumber)
         {
-            //Compile a gamestate package which is sent to all players
-            //Send game state to all, embedd the turn number
-            //Construct game state
             List<CharacterStateData> characterStates = new List<CharacterStateData>();
             foreach (CharacterObject character in characters.Values)
             {
@@ -120,8 +152,11 @@ namespace Server
                 buildingStates.Add(new BuildingStateData(building.id, building.buildingType, building.teamId, building.position, building.hp));
             }
 
-            GameState gameState = new GameState(turnNumber, characterStates, buildingStates, events);
+            return new GameState(turnNumber, characterStates, buildingStates, events);
+        }
 
+        private static void SendGameState(GameState gameState)
+        {
             ServerSend.GameState(gameState);
 
             foreach (Event evnt in events)
