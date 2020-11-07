@@ -294,7 +294,16 @@ public class GameManager : MonoBehaviour
 
     private void onPlayersReceiveDamage(DamageEvent evnt)
     {
-        Debug.Log(evnt);
+        if(evnt.playerCausedDamageId != Client.instance.myId)
+        {
+            foreach(int objectHitId in evnt.objectsHitIds)
+            {
+                if(characters.ContainsKey(objectHitId))
+                {
+                    characters[objectHitId].takeDamage();   
+                }
+            }
+        }
     }
 
     #endregion

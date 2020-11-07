@@ -20,21 +20,10 @@ public class RoachBite : Ability
         if(true)
         {
             //TODO sanity check
-            Vector2 point = obj.position + attackPoint + direction * AbilityConstants.ROACH_BITE_RANGE;
-            List<CharacterObject> objectsHit = PhysicsUtil.findCharactersInRadius(obj.id, point, AbilityConstants.ROACH_BITE_RADIUS);
-            List<int> playersHitId = new List<int>();
-            foreach (CharacterObject objectHit in objectsHit)
+            List<int> objectsHitIds = AbilityHelper.abilityAoeDamage(obj.id, obj.teamId, obj.position, attackPoint, direction, AbilityConstants.ROACH_BITE_RADIUS, AbilityConstants.ROACH_BITE_RANGE, AbilityConstants.ROACH_BITE_DAMAGE);
+            if (objectsHitIds.Count > 0)
             {
-                if(objectHit.teamId != obj.teamId)
-                {
-                    objectHit.hp = objectHit.hp - AbilityConstants.ROACH_BITE_DAMAGE;
-                    playersHitId.Add(objectHit.playerId);
-                }
-            }
-
-            if(playersHitId.Count > 0)
-            {
-                GameLogic.PushEvent(new DamageEvent(obj.playerId, playersHitId));
+                GameLogic.PushEvent(new DamageEvent(obj.playerId, objectsHitIds));
             }
 
             return true;

@@ -12,5 +12,10 @@ public class RoachObject : CharacterObject
     {
         return abilities;
     }
+
+    public override void takeDamage()
+    {
+        AnimationEffectManager.instance.MarineBlood(gameObject.transform.position);
+    }
 }
 

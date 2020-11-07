@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class CharacterObject : GGameObject
@@ -24,6 +25,7 @@ public abstract class CharacterObject : GGameObject
 
     public Vector2 attackPoint;
     public Vector2 attackOrigin;
+    public Vector2 effectPoint;
 
     public ECharacterType type;
     public EObjectDirection direction;
@@ -206,4 +208,6 @@ public abstract class CharacterObject : GGameObject
     }
 
     public abstract List<Ability> GetAbilities();
+
+    public abstract void takeDamage();
 }

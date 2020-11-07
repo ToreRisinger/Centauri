@@ -8,5 +8,9 @@ public class MarineObject : CharacterObject
     {
         return new List<Ability>();
     }
+    public override void takeDamage()
+    {
+        AnimationEffectManager.instance.MarineBlood((Vector2)gameObject.transform.position + effectPoint);
+    }
 }
 

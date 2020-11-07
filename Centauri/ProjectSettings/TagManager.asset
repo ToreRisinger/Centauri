@@ -44,6 +44,9 @@ TagManager:
   - name: X Layer
     uniqueID: 3890839965
     locked: 0
+  - name: Effects
+    uniqueID: 817061025
+    locked: 0
   - name: Always Front
     uniqueID: 2902403181
     locked: 0

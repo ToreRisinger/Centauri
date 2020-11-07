@@ -138,7 +138,7 @@ namespace Server
             CharacterObject obj;
 
             //Add player to a team
-            if (!(TeamManager.marineTeam.GetNrOfPlayers() > TeamManager.centauriTeam.GetNrOfPlayers()))
+            if (TeamManager.centauriTeam.GetNrOfPlayers() <= TeamManager.marineTeam.GetNrOfPlayers())
             {
                 _newPlayerPosition = Map.mapPosition + new Vector2(map.getAlienSpawnPoint().X, map.getAlienSpawnPoint().Y);
                 TeamManager.centauriTeam.AddPlayer(_playerId);

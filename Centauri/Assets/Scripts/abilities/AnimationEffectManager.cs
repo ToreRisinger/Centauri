@@ -5,6 +5,7 @@ public class AnimationEffectManager : MonoBehaviour
     public static AnimationEffectManager instance;
 
     public GameObject roachBiteAnimationPrefab;
+    public GameObject marineBloodAnimationPrefab;
 
     private void Awake()
     {
@@ -17,6 +18,11 @@ public class AnimationEffectManager : MonoBehaviour
             Debug.Log("Instance already exists, destroying object!");
             Destroy(this);
         }
+    }
+
+    public void MarineBlood(Vector2 position)
+    {
+        spawnAnimationObject(marineBloodAnimationPrefab, position);
     }
 
     public void RoachBite(Vector2 position)

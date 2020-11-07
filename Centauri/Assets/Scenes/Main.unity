@@ -1228,6 +1228,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roachBiteAnimationPrefab: {fileID: 4652259009233536368, guid: c0ce3c782c55e904ab1655da01f09c94,
     type: 3}
+  marineBloodAnimationPrefab: {fileID: 8571152517370040849, guid: 9bafa2a6c2bda294cab91075b1d06f14,
+    type: 3}
 --- !u!4 &2139794974
 Transform:
   m_ObjectHideFlags: 0

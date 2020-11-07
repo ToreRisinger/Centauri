@@ -6,22 +6,22 @@ using System.Text;
 public class DamageEvent : Event
 {
     public int playerCausedDamageId;
-    public List<int> playerHitIds;
+    public List<int> objectsHitIds;
 
-    public DamageEvent(int _playerCausedDamageId, List<int> _playerHitIds) : base(EventTypes.ServerEvents.DAMAGE_EVENT)
+    public DamageEvent(int _playerCausedDamageId, List<int> _objectsHitIds) : base(EventTypes.ServerEvents.DAMAGE_EVENT)
     {
         playerCausedDamageId = _playerCausedDamageId;
-        playerHitIds = _playerHitIds;
+        objectsHitIds = _objectsHitIds;
     }
 
     public DamageEvent(int eventId, Packet _packet) : base((EventTypes.ServerEvents)eventId)
     {
         playerCausedDamageId = _packet.ReadInt();
         int numberOfPlayersHit = _packet.ReadInt();
-        playerHitIds = new List<int>();
+        objectsHitIds = new List<int>();
         for (int i = 0; i < numberOfPlayersHit; i++)
         {
-            playerHitIds.Add(_packet.ReadInt());
+            objectsHitIds.Add(_packet.ReadInt());
         }
     }
 
@@ -34,8 +34,8 @@ public class DamageEvent : Event
     {
         base.WriteToPacket(_packet);
         _packet.Write(playerCausedDamageId);
-        _packet.Write(playerHitIds.Count);
-        foreach(int id in playerHitIds)
+        _packet.Write(objectsHitIds.Count);
+        foreach(int id in objectsHitIds)
         {
             _packet.Write(id);
         }
