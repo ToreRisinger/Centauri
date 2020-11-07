@@ -46,6 +46,8 @@ public class GameManager : MonoBehaviour
         {
             GameState gameState = gameStateQueue.Dequeue();
 
+            turnNumber = gameState.turnNumber;
+
             //Handle events
             handleEvents(gameState.events);
 
@@ -106,7 +108,6 @@ public class GameManager : MonoBehaviour
 
 
             gameStateHistory.Add(gameState);
-            turnNumber = gameState.turnNumber;
         }
 
         if (gameStateHistory.Count > 5)
@@ -122,7 +123,6 @@ public class GameManager : MonoBehaviour
         foreach (EPlayerAction action in actions)
         {
             int index = 0;
-            bool actionExecuted = false;
             switch (action)
             {
                 case EPlayerAction.ACTIVATE_ABILITY_0:
@@ -147,7 +147,7 @@ public class GameManager : MonoBehaviour
                     break;
             }
 
-            actionExecuted = character.ActivateAbility(index);
+            bool actionExecuted = character.ActivateAbility(index);
 
             if (actionExecuted)
             {

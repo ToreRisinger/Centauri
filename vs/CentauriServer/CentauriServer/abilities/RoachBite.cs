@@ -15,12 +15,12 @@ public class RoachBite : Ability
         return true;
     }
 
-    public override bool run(CharacterObject obj, Vector2 attackPoint, Vector2 direction)
+    public override bool run(CharacterObject obj, int turnNumber, Vector2 attackPoint, Vector2 direction)
     {
         if(true)
         {
             //TODO sanity check
-            List<int> objectsHitIds = AbilityHelper.abilityAoeDamage(obj.id, obj.teamId, obj.position, attackPoint, direction, AbilityConstants.ROACH_BITE_RADIUS, AbilityConstants.ROACH_BITE_RANGE, AbilityConstants.ROACH_BITE_DAMAGE);
+            List<int> objectsHitIds = AbilityHelper.abilityAoeDamage(obj.id, obj.teamId, turnNumber, obj.position, attackPoint, direction, AbilityConstants.ROACH_BITE_RADIUS, AbilityConstants.ROACH_BITE_RANGE, AbilityConstants.ROACH_BITE_DAMAGE);
             if (objectsHitIds.Count > 0)
             {
                 GameLogic.PushEvent(new DamageEvent(obj.playerId, objectsHitIds));

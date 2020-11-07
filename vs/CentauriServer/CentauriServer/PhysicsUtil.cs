@@ -8,33 +8,40 @@ public class PhysicsUtil
     private static float characterHitBoxRadius = 2.0f;
 
 
-    public static List<CharacterObject> findCharactersInRadius(Vector2 point, float radius)
+    public static List<CharacterObject> findCharactersInRadius(int turnNumber, Vector2 point, float radius)
     {
-        //TODO need to sync collision box for each type of gameobject with client
         List<CharacterObject> charactersHit = new List<CharacterObject>();
-        foreach (CharacterObject obj in GameLogic.characters.Values)
+        foreach (CharacterStateData obj in GameLogic.gameStates[turnNumber].characters)
         {
             Vector2 position = obj.position;
             float diffLength = (position - point).Length();
             if (diffLength <= radius + characterHitBoxRadius)
             {
-                charactersHit.Add(obj);
+                if (GameLogic.characters.ContainsKey(obj.id))
+                {
+                    charactersHit.Add(GameLogic.characters[obj.id]);
+                }
+
             }
         }
 
         return charactersHit;
     }
 
-    public static List<CharacterObject> findCharactersInRadius(int excludeCharacterId, Vector2 point, float radius)
+    public static List<CharacterObject> findCharactersInRadius(int excludeCharacterId, int turnNumber, Vector2 point, float radius)
     {
         List<CharacterObject> charactersHit = new List<CharacterObject>();
-        foreach (CharacterObject obj in GameLogic.characters.Values)
+        foreach (CharacterStateData obj in GameLogic.gameStates[turnNumber].characters)
         {
             Vector2 position = obj.position;
             float diffLength = (position - point).Length();
             if (diffLength <= radius + characterHitBoxRadius && obj.id != excludeCharacterId)
             {
-                charactersHit.Add(obj);
+                if(GameLogic.characters.ContainsKey(obj.id))
+                {
+                    charactersHit.Add(GameLogic.characters[obj.id]);
+                }
+                
             }
         }
 

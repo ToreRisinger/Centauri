@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Numerics;
+using UnityEngine;
 
 public static class AbilityHelper
 {
@@ -12,7 +12,6 @@ public static class AbilityHelper
         {
             if (objectHit.teamId != characterTeamId)
             {
-                objectHit.hp = objectHit.hp - damage;
                 returnList.Add(objectHit.id);
             }
         }

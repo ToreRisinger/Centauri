@@ -13,7 +13,7 @@ namespace Server
         public static Dictionary<int, CharacterObject> characters;
         private static Queue<PlayerCommandData> playerCommands;
         private static Queue<Event> events;
-        private static Dictionary<int, GameState> gameStates;
+        public static Dictionary<int, GameState> gameStates;
         private static int turnNumber;
 
         public static void init()
@@ -39,9 +39,10 @@ namespace Server
 
             ThreadManager.UpdateMain();
 
-            RemoveOldGameStates();
-
+            Queue<PlayerCommandData> playerCommandsTmp = new Queue<PlayerCommandData>();
             handlePlayerCommands();
+
+            RemoveOldGameStates(playerCommandsTmp);
 
 
             foreach (CharacterObject character in characters.Values)
@@ -61,7 +62,7 @@ namespace Server
 
         }
 
-        private static void RemoveOldGameStates()
+        private static void RemoveOldGameStates(Queue<PlayerCommandData> playerCommandsTmp)
         {
             if(players.Count == 0)
             {
@@ -69,7 +70,7 @@ namespace Server
             }
 
             //Remove old states
-            Queue<PlayerCommandData>.Enumerator enumerator = playerCommands.GetEnumerator();
+            Queue<PlayerCommandData>.Enumerator enumerator = playerCommandsTmp.GetEnumerator();
             Dictionary<int, int> turnsReceived = new Dictionary<int, int>();
             while (enumerator.MoveNext())
             {
@@ -104,25 +105,25 @@ namespace Server
                     characterObject.position = playerCommandData.position;
                     characterObject.direction = playerCommandData.direction;
 
-                    handlePlayerAbilities(characterObject, playerCommandData.abilityActivations);
+                    handlePlayerAbilities(characterObject, playerCommandData.turnNumber, playerCommandData.abilityActivations);
                 }
             }
         }
 
-        private static void handlePlayerAbilities(CharacterObject characterObject, List<AbilityActivationData> abilityActivations)
+        private static void handlePlayerAbilities(CharacterObject characterObject, int turnNumber, List<AbilityActivationData> abilityActivations)
         {
             foreach(AbilityActivationData abilityActivationData in abilityActivations)
             {
-                activateAbility(characterObject, abilityActivationData);
+                activateAbility(characterObject, turnNumber, abilityActivationData);
             }
         }
 
-        private static void activateAbility(CharacterObject characterObject, AbilityActivationData abilityActivationData)
+        private static void activateAbility(CharacterObject characterObject, int turnNumber, AbilityActivationData abilityActivationData)
         {
             List<Ability> abilties = characterObject.GetAbilities();
             if (abilties.Count > abilityActivationData.abilityIndex && abilties[abilityActivationData.abilityIndex].isEnabled()) 
             {
-                bool success = abilties[abilityActivationData.abilityIndex].run(characterObject, abilityActivationData.attackPoint, abilityActivationData.direction);
+                bool success = abilties[abilityActivationData.abilityIndex].run(characterObject, turnNumber, abilityActivationData.attackPoint, abilityActivationData.direction);
                 if(success)
                 {
                     PushEvent(new PlayerActivateAbilityEvent(characterObject.playerId, abilityActivationData.abilityIndex));

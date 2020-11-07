@@ -37,7 +37,7 @@ public abstract class Ability
         }
     }
 
-    public abstract bool run(CharacterObject obj, Vector2 attackPoint, Vector2 direction);
+    public abstract bool run(CharacterObject obj, int turnNumber, Vector2 attackPoint, Vector2 direction);
 
     public abstract bool isEnabled();
 }
